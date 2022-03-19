@@ -5,27 +5,33 @@ import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark } from '@/themes';
 import { parseTheme } from '@/utils/theming';
 
-/** Matches structure in database */
-interface ThemeVariants {
-	dark: Theme;
-	light: Theme;
-}
+type ThemeVariants = 'dark' | 'light';
+type ThemeVersions = 'base' | 'overrides';
 
 export const useThemeStore = defineStore({
 	id: 'themesStore',
 	state: () => ({
-		themes: null as null | ThemeVariants,
+		baseThemes: {} as Record<ThemeVariants, Theme>,
+		/** For now, the theme overrides don't need to define the entire theme. Only the alterations. */
+		themeOverrides: {} as Record<ThemeVariants, Theme['theme']>,
 	}),
 	getters: {
 		/**
 		 * Getter returns function -
 		 * Usage: themeCSS( 'dark' | 'light' )
 		 */
-		themeCSS: (state) => {
-			return (mode: 'dark' | 'light'): string => {
+		getThemeCSS: (state) => {
+			return (mode: ThemeVariants = 'light', version: ThemeVersions = 'base'): string => {
 				let themeVariables = '';
-				if (state.themes && state.themes[mode].theme) {
-					themeVariables = parseTheme(state.themes[mode].theme);
+
+				if (version === 'overrides') {
+					if (state.themeOverrides[mode]) {
+						themeVariables = parseTheme(state.themeOverrides[mode]);
+					}
+				} else {
+					if (state.baseThemes[mode]?.theme) {
+						themeVariables = parseTheme(state.baseThemes[mode].theme);
+					}
 				}
 
 				/**
@@ -51,10 +57,8 @@ body.${mode} {
 	actions: {
 		async hydrate() {
 			/** Pull in base themes first */
-			this.themes = {
-				dark: baseDark || {},
-				light: baseLight || {},
-			};
+			this.baseThemes.dark = baseDark || {};
+			this.baseThemes.light = baseLight || {};
 
 			/** TODO: Merge with theme overrides from database */
 		},

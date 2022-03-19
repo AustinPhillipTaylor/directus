@@ -48,7 +48,7 @@ interface CategoricalSettings {
 
 interface ThemeSettings {
 	/** General, global settings that will cascade down through the entire app */
-	global: GlobalSettings;
+	global?: GlobalSettings;
 	/** Category-level settings */
 	category?: CategoricalSettings;
 }
