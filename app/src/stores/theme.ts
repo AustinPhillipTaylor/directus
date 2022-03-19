@@ -28,17 +28,21 @@ export const useThemeStore = defineStore({
 					themeVariables = parseTheme(state.themes[mode].theme);
 				}
 
-				const resolvedThemeCSS = `
-					body.${mode} {
-						${themeVariables}
-					}
+				/**
+				 * You'll notice we add a couple tabs to the line breaks in the
+				 * themeVariables string. This is purely cosmetic. The indentation
+				 * a little weird in the page source if we don't do this.
+				 */
+				const resolvedThemeCSS = `\n\n\
+body.${mode} {
+	${themeVariables.replace(/\n/g, '\n\t')}
+}
 
-					@media (prefers-color-scheme: ${mode}) {
-						body.auto {
-							${themeVariables}
-						}
-					}
-				`;
+@media (prefers-color-scheme: ${mode}) {
+	body.auto {
+		${themeVariables.replace(/\n/g, '\n\t\t')}
+	}
+}`;
 
 				return resolvedThemeCSS;
 			};
