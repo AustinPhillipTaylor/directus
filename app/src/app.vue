@@ -16,6 +16,10 @@
 
 		<router-view v-else-if="!hydrating" />
 
+		<teleport to="#system-themes">
+			{{ lightTheme }}
+			{{ darkTheme }}
+		</teleport>
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>
@@ -23,7 +27,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from 'vue';
-import { useAppStore, useUserStore, useServerStore } from '@/stores';
+import { useAppStore, useUserStore, useServerStore, useThemeStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
@@ -36,6 +40,7 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
+		const themeStore = useThemeStore();
 
 		const { hydrating } = toRefs(appStore);
 
@@ -89,11 +94,19 @@ export default defineComponent({
 			return serverStore.info?.project?.custom_css || '';
 		});
 
+		const lightTheme = computed(() => {
+			return themeStore.themeCSS('light');
+		});
+
+		const darkTheme = computed(() => {
+			return themeStore.themeCSS('dark');
+		});
+
 		const error = computed(() => appStore.error);
 
 		useSystem();
 
-		return { t, hydrating, brandStyle, error, customCSS };
+		return { t, hydrating, brandStyle, error, customCSS, lightTheme, darkTheme };
 	},
 });
 </script>
