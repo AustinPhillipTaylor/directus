@@ -17,8 +17,12 @@
 		<router-view v-else-if="!hydrating" />
 
 		<teleport to="#system-themes">
-			{{ lightTheme }}
-			{{ darkTheme }}
+			{{ lightThemeBase }}
+			{{ darkThemeBase }}
+		</teleport>
+		<teleport to="#theme-overrides">
+			{{ lightThemeOverrides }}
+			{{ darkThemeOverrides }}
 		</teleport>
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
@@ -94,19 +98,37 @@ export default defineComponent({
 			return serverStore.info?.project?.custom_css || '';
 		});
 
-		const lightTheme = computed(() => {
-			return themeStore.themeCSS('light');
+		const lightThemeBase = computed(() => {
+			return themeStore.getThemeCSS('light', 'base') || '';
 		});
 
-		const darkTheme = computed(() => {
-			return themeStore.themeCSS('dark');
+		const darkThemeBase = computed(() => {
+			return themeStore.getThemeCSS('dark', 'base') || '';
+		});
+
+		const lightThemeOverrides = computed(() => {
+			return themeStore.getThemeCSS('light', 'overrides') || '';
+		});
+
+		const darkThemeOverrides = computed(() => {
+			return themeStore.getThemeCSS('dark', 'overrides') || '';
 		});
 
 		const error = computed(() => appStore.error);
 
 		useSystem();
 
-		return { t, hydrating, brandStyle, error, customCSS, lightTheme, darkTheme };
+		return {
+			t,
+			hydrating,
+			brandStyle,
+			error,
+			customCSS,
+			lightThemeBase,
+			darkThemeBase,
+			lightThemeOverrides,
+			darkThemeOverrides,
+		};
 	},
 });
 </script>
