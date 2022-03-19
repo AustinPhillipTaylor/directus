@@ -13,6 +13,7 @@ import {
 	useRequestsStore,
 	useServerStore,
 	useSettingsStore,
+	useThemeStore,
 	useUserStore,
 	useNotificationsStore,
 } from '@/stores';
@@ -35,6 +36,7 @@ export function useStores(
 		usePresetsStore,
 		useSettingsStore,
 		useServerStore,
+		useThemeStore,
 		useLatencyStore,
 		useRelationsStore,
 		usePermissionsStore,
