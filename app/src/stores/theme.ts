@@ -18,7 +18,7 @@ export const useThemeStore = defineStore({
 	getters: {
 		/**
 		 * Getter returns function -
-		 * Usage: themeCSS( 'dark' | 'light' )
+		 * Usage: getThemeCSS( 'dark' | 'light', 'base' | 'overrides' )
 		 */
 		getThemeCSS: (state) => {
 			return (mode: ThemeVariants = 'light', version: ThemeVersions = 'base'): string => {
