@@ -1,19 +1,23 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
+import { notify } from '@/utils/notify';
+import { i18n } from '@/lang';
 import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark } from '@/themes';
 import { parseTheme } from '@/utils/theming';
 
 type ThemeVariants = 'dark' | 'light';
 type ThemeVersions = 'base' | 'overrides';
+type ThemeBase = Record<ThemeVariants, Theme>;
+type ThemeOverrides = Record<ThemeVariants, Theme['theme']>;
 
 export const useThemeStore = defineStore({
 	id: 'themesStore',
 	state: () => ({
-		baseThemes: {} as Record<ThemeVariants, Theme>,
+		themeBase: {} as ThemeBase,
 		/** For now, the theme overrides don't need to define the entire theme. Only the alterations. */
-		themeOverrides: {} as Record<ThemeVariants, Theme['theme']>,
+		themeOverrides: {} as ThemeOverrides,
 	}),
 	getters: {
 		/**
@@ -29,8 +33,8 @@ export const useThemeStore = defineStore({
 						themeVariables = parseTheme(state.themeOverrides[mode]);
 					}
 				} else {
-					if (state.baseThemes[mode]?.theme) {
-						themeVariables = parseTheme(state.baseThemes[mode].theme);
+					if (state.themeBase[mode]?.theme) {
+						themeVariables = parseTheme(state.themeBase[mode].theme);
 					}
 				}
 
@@ -57,18 +61,31 @@ body.${mode} {
 	actions: {
 		async hydrate() {
 			/** Pull in base themes first */
-			this.baseThemes.dark = baseDark || {};
-			this.baseThemes.light = baseLight || {};
+			this.themeBase.dark = baseDark || {};
+			this.themeBase.light = baseLight || {};
 
-			/** TODO: Merge with theme overrides from database */
+			/** Get server info to pull overrides */
+			const serverInfo = await api.get(`/server/info`, { params: { limit: -1 } });
+			const overrides: ThemeOverrides = serverInfo.data.data.project['theme_overrides'];
+
+			this.themeOverrides.dark = overrides.dark || {};
+			this.themeOverrides.light = overrides.light || {};
 		},
 
 		async dehydrate() {
 			this.$reset();
 		},
 
-		async updateTheme(updates: { [key: string]: any }) {
-			/** Just leaving this here temporarily */
+		async updateThemeOverrides(updates: ThemeOverrides) {
+			try {
+				const response = await api.patch(`/settings/themes`, updates);
+				this.themeOverrides = response.data.data.theme_overrides;
+				notify({
+					title: i18n.global.t('theme_update_success'),
+				});
+			} catch (err: any) {
+				unexpectedError(err);
+			}
 		},
 	},
 });

@@ -324,6 +324,7 @@ confirm_revert: Confirm Revert
 confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
+theme_update_success: Theme updated
 title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
