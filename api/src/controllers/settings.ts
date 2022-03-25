@@ -23,15 +23,6 @@ router.get(
 	respond
 );
 
-// TODO: Create export endpoint
-router.get(
-	'/themes/export',
-	asyncHandler(async (req, res, next) => {
-		return next();
-	}),
-	respond
-);
-
 router.patch(
 	'/themes',
 	asyncHandler(async (req, res, next) => {
