@@ -22,7 +22,7 @@ const pixels = Joi.string()
 const baseColorVariants = Joi.object({
 	normal: Joi.alternatives([hex, link]),
 	accent: Joi.alternatives([hex, link]),
-	muted: Joi.alternatives([hex, link]),
+	subtle: Joi.alternatives([hex, link]),
 });
 
 const globalSettings = Joi.object({

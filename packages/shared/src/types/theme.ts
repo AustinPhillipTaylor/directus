@@ -5,7 +5,7 @@ type Pixels = `${number}px`;
 interface BaseColorVariants {
 	normal?: Hex | Link;
 	accent?: Hex | Link;
-	muted?: Hex | Link;
+	subtle?: Hex | Link;
 }
 
 interface GlobalSettings {
