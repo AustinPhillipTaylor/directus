@@ -23,7 +23,6 @@ router.get(
 	respond
 );
 
-// TODO: Add themes endpoint to GraphQL
 // TODO: Create export endpoint
 router.get(
 	'/themes/export',
