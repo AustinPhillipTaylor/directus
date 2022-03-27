@@ -291,8 +291,8 @@ body {
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
+		border: var(--g-border-width) solid var(--border-normal);
+		border-radius: var(--g-border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		.prepend {

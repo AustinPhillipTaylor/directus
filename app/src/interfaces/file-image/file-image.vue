@@ -189,7 +189,7 @@ const edits = computed(() => {
 	height: var(--input-height-tall);
 	overflow: hidden;
 	background-color: var(--background-normal-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--g-border-radius);
 }
 
 img {
