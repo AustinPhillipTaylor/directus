@@ -65,15 +65,15 @@ export const lightTheme: Theme = {
 		 */
 		components: {
 			module: {
-				background: '#18222F',
-				foreground: '#8196B1',
-				hover: {
-					background: '#18222F',
-					foreground: '#FFFFFF',
+				background: {
+					normal: '#18222F',
+					hover: '#18222F',
+					active: '#F0F4F9',
 				},
-				active: {
-					background: '#F0F4F9',
-					foreground: '#172940',
+				foreground: {
+					normal: '#8196B1',
+					hover: '#FFFFFF',
+					active: '#172940',
 				},
 			},
 		},

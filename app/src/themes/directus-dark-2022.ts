@@ -65,15 +65,15 @@ export const darkTheme: Theme = {
 		 */
 		components: {
 			module: {
-				background: '#0D1117',
-				foreground: '#666672',
-				hover: {
-					background: '#0D1117',
-					foreground: '#FFFFFF',
+				background: {
+					normal: '#0D1117',
+					hover: '#0D1117',
+					active: '#21262E',
 				},
-				active: {
-					background: '#21262E',
-					foreground: '#F0F6FC',
+				foreground: {
+					normal: '#666672',
+					hover: '#FFFFFF',
+					active: '#F0F6FC',
 				},
 			},
 		},
