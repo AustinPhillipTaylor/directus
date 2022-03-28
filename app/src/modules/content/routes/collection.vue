@@ -701,7 +701,7 @@ export default defineComponent({
 	}
 
 	.save {
-		color: var--g-color-warning-normal;
+		color: var(--g-color-warning-normal);
 
 		&:hover {
 			color: var(--g-color-warning-accent);
@@ -713,7 +713,7 @@ export default defineComponent({
 		color: var(--g-color-foreground-subtle);
 
 		&:hover {
-			color: var--g-color-warning-normal;
+			color: var(--g-color-warning-normal);
 		}
 	}
 

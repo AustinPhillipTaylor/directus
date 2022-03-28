@@ -63,7 +63,7 @@ export default defineComponent({
 }
 
 .warning .icon {
-	color: var--g-color-warning-normal;
+	color: var(--g-color-warning-normal);
 	background-color: var(--g-color-warning-subtle);
 }
 

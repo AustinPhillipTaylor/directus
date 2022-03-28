@@ -462,7 +462,7 @@ export default defineComponent({
 }
 
 .warning {
-	color: var--g-color-warning-normal;
+	color: var(--g-color-warning-normal);
 }
 
 .danger {

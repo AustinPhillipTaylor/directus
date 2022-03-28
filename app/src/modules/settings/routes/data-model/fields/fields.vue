@@ -218,7 +218,7 @@ export default defineComponent({
 
 	.instant-save {
 		margin-left: 4px;
-		color: var--g-color-warning-normal;
+		color: var(--g-color-warning-normal);
 	}
 }
 

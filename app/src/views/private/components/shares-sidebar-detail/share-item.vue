@@ -149,7 +149,7 @@ export default defineComponent({
 	text-transform: uppercase;
 
 	&.expired {
-		color: var--g-color-warning-normal;
+		color: var(--g-color-warning-normal);
 	}
 
 	&.upcoming {

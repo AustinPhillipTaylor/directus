@@ -226,9 +226,9 @@ export default defineComponent({
 .warning {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var--g-color-warning-normal;
+	--v-button-background-color: var(--g-color-warning-normal);
 	--v-button-background-color-hover: var(--g-color-warning-accent);
-	--v-button-background-color-active: var--g-color-warning-normal;
+	--v-button-background-color-active: var(--g-color-warning-normal);
 }
 
 .danger {
@@ -257,9 +257,9 @@ export default defineComponent({
 
 .warning.rounded {
 	--v-button-background-color: var(--g-color-warning-subtle);
-	--v-button-color: var--g-color-warning-normal;
+	--v-button-color: var(--g-color-warning-normal);
 	--v-button-background-color-hover: var(--g-color-warning-subtle);
-	--v-button-color-hover: var--g-color-warning-normal;
+	--v-button-color-hover: var(--g-color-warning-normal);
 }
 
 .danger.rounded {

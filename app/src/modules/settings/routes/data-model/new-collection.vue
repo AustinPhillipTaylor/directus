@@ -367,7 +367,7 @@ export default defineComponent({
 									text: '$t:archived',
 									value: 'archived',
 									foreground: '#FFFFFF',
-									background: 'var--g-color-warning-normal',
+									background: 'var(--g-color-warning-normal)',
 								},
 							],
 						},

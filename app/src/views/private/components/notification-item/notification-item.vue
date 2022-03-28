@@ -172,10 +172,10 @@ export default defineComponent({
 	}
 
 	&.warning {
-		background-color: var--g-color-warning-normal;
+		background-color: var(--g-color-warning-normal);
 
 		&.tail::after {
-			background-color: var--g-color-warning-normal;
+			background-color: var(--g-color-warning-normal);
 		}
 
 		.text {

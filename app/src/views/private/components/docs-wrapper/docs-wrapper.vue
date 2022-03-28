@@ -441,7 +441,7 @@ export default defineComponent({
 
 .md :deep(.hint.warning) {
 	background-color: var(--g-color-warning-subtle);
-	border-left: 2px solid var--g-color-warning-normal;
+	border-left: 2px solid var(--g-color-warning-normal);
 }
 
 .md :deep(.hint.danger) {

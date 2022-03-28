@@ -140,7 +140,7 @@ body {
 		}
 
 		&.warning .inner {
-			background-color: var--g-color-warning-normal;
+			background-color: var(--g-color-warning-normal);
 		}
 
 		&.success .inner {
