@@ -37,9 +37,9 @@ export default function parseTheme(theme: Theme['theme']): string {
 		/** Resolve all global variables first, prepend --g- */
 		outputVariables.push(...listFromObj(theme.global, '--g-', ';', '-'));
 	}
-	if (theme.category) {
-		/** Next, resolve the category variables */
-		outputVariables.push(...listFromObj(theme.category, '--', ';', '-'));
+	if (theme.components) {
+		/** Next, resolve the components variables */
+		outputVariables.push(...listFromObj(theme.components, '--', ';', '-'));
 	}
 
 	// Join variables

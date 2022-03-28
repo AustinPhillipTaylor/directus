@@ -54,7 +54,7 @@ export const darkTheme: Theme = {
 				foreground: {
 					normal: '#C9D1D9',
 					accent: '#F0F6FC',
-					subtle: '#8B949E',
+					subtle: '#666672',
 					invert: '#0D1117',
 				},
 			},
@@ -63,17 +63,17 @@ export const darkTheme: Theme = {
 		 * Future iterations can build this out further to include more nuanced
 		 * categories, such as inputs, buttons, tables, etc.
 		 */
-		category: {
+		components: {
 			module: {
 				background: '#0D1117',
-				foreground: '#8B949E',
+				foreground: '#666672',
 				hover: {
 					background: '#0D1117',
 					foreground: '#FFFFFF',
 				},
 				active: {
 					background: '#21262E',
-					foreground: '#FF99DD',
+					foreground: '#F0F6FC',
 				},
 			},
 		},

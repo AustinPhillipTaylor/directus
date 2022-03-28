@@ -63,17 +63,17 @@ export const lightTheme: Theme = {
 		 * Future iterations can build this out further to include more nuanced
 		 * categories, such as inputs, buttons, tables, etc.
 		 */
-		category: {
+		components: {
 			module: {
 				background: '#18222F',
-				foreground: '#A2B5CD',
+				foreground: '#8196B1',
 				hover: {
 					background: '#18222F',
 					foreground: '#FFFFFF',
 				},
 				active: {
 					background: '#F0F4F9',
-					foreground: '#6644FF',
+					foreground: '#172940',
 				},
 			},
 		},

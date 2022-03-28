@@ -58,11 +58,11 @@ const subProperty = Joi.object()
 	.pattern(/./, Joi.alternatives([Joi.string(), pixels, hex, link, Joi.link('#subProperty')]))
 	.id('subProperty');
 
-const categoricalSettings = Joi.object().pattern(/./, subProperty);
+const componentSettings = Joi.object().pattern(/./, subProperty);
 
 const themeSettings = Joi.object({
 	global: globalSettings,
-	category: categoricalSettings,
+	components: componentSettings,
 });
 
 const themeList = Joi.object().pattern(/./, themeSettings);

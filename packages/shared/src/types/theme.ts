@@ -41,7 +41,7 @@ interface SubProperty {
 	[key: string]: string | Pixels | Hex | Link | SubProperty;
 }
 
-interface CategoricalSettings {
+interface ComponentSettings {
 	/** Key corresponds to category identifier */
 	[key: string]: SubProperty;
 }
@@ -50,7 +50,7 @@ interface ThemeSettings {
 	/** General, global settings that will cascade down through the entire app */
 	global?: GlobalSettings;
 	/** Category-level settings */
-	category?: CategoricalSettings;
+	components?: ComponentSettings;
 }
 
 /** For use with theming interface */
