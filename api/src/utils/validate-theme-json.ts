@@ -37,6 +37,7 @@ const globalSettings = Joi.object({
 	color: Joi.object({
 		primary: baseColorVariants,
 		secondary: baseColorVariants,
+		success: baseColorVariants,
 		warning: baseColorVariants,
 		danger: baseColorVariants,
 		foreground: baseColorVariants.append({

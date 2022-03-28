@@ -20,6 +20,7 @@ interface GlobalSettings {
 	color?: {
 		primary?: BaseColorVariants;
 		secondary?: BaseColorVariants;
+		success?: BaseColorVariants;
 		warning?: BaseColorVariants;
 		danger?: BaseColorVariants;
 		foreground?: BaseColorVariants & {

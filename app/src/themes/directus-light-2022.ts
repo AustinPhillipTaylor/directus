@@ -29,6 +29,11 @@ export const lightTheme: Theme = {
 					accent: '#FF77BB',
 					subtle: '#FFDDEE',
 				},
+				success: {
+					normal: '#2ECDA7',
+					accent: '#2CBC9B',
+					subtle: '#EAFAF6',
+				},
 				warning: {
 					normal: '#FBC54F',
 					accent: '#EDBA4A',
@@ -49,7 +54,7 @@ export const lightTheme: Theme = {
 					accent: '#E4EAF1',
 					subtle: '#F7FAFC',
 					page: '#FFFFFF',
-					invert: '#263238',
+					invert: '#18222F',
 				},
 				foreground: {
 					normal: '#4F5464',

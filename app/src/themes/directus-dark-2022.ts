@@ -29,6 +29,11 @@ export const darkTheme: Theme = {
 					accent: '#FFDDEE',
 					subtle: '#FF77BB',
 				},
+				success: {
+					normal: '#2ECDA7',
+					accent: '#EAFAF6',
+					subtle: '#2CBC9B',
+				},
 				warning: {
 					normal: '#FBC54F',
 					accent: '#FEF0D3',
