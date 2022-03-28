@@ -419,20 +419,20 @@ const customFilter = computed(() => {
 	cursor: default;
 
 	.invalid-icon {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--g-color-danger-normal);
 	}
 }
 
 .clear-icon {
 	--v-icon-color: var(--g-color-foreground-subtle);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color-hover: var(--g-color-danger-normal);
 
 	margin-right: 8px;
 	color: var(--g-color-foreground-subtle);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--danger);
+		color: var(--g-color-danger-normal);
 	}
 }
 

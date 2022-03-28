@@ -251,6 +251,6 @@ const updateAllowed = computed(() => {
 }
 
 .deselect:hover {
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--g-color-danger-normal);
 }
 </style>

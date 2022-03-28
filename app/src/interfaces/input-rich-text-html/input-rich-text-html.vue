@@ -466,7 +466,7 @@ export default defineComponent({
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--g-color-danger-normal);
 }
 
 .image-preview,

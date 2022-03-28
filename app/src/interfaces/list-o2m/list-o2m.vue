@@ -345,7 +345,7 @@ const updateAllowed = computed(() => {
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--g-color-danger-normal);
 	}
 }
 </style>
