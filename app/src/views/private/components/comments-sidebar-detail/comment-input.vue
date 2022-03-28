@@ -365,7 +365,7 @@ function pressedEnter() {
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--background-input);
-	border: var(--g-border-width) solid var(--border-normal);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 }
@@ -389,7 +389,11 @@ function pressedEnter() {
 	bottom: 36px;
 	left: 0;
 	height: 8px;
-	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
+	background: linear-gradient(
+		180deg,
+		rgb(var(--g-color-background-page-rgb), 0) 0%,
+		rgb(var(--g-color-background-page-rgb), 1) 100%
+	);
 	content: '';
 }
 
@@ -397,7 +401,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 8px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -406,7 +410,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 36px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }

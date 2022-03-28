@@ -74,7 +74,7 @@ const isSmall = computed(() => props.height < 528);
 	}
 
 	.image {
-		background-color: var(--background-normal);
+		background-color: var(--g-color-background-normal);
 		border-radius: var(--g-border-radius);
 
 		img {

@@ -258,15 +258,15 @@ function stepDown() {
 <style>
 body {
 	--v-input-font-family: var(--g-font-family-sans);
-	--v-input-placeholder-color: var(--foreground-subdued);
+	--v-input-placeholder-color: var(--g-color-foreground-subtle);
 }
 </style>
 
 <style lang="scss" scoped>
 .v-input {
-	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
-	--v-input-color: var(--foreground-normal);
+	--arrow-color: var(--g-color-border-normal);
+	--v-icon-color: var(--g-color-foreground-subtle);
+	--v-input-color: var(--g-color-foreground-normal);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 
@@ -291,7 +291,7 @@ body {
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--v-input-background-color);
-		border: var(--g-border-width) solid var(--border-normal);
+		border: var(--g-border-width) solid var(--g-color-border-normal);
 		border-radius: var(--g-border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -322,23 +322,23 @@ body {
 			}
 
 			&.disabled {
-				--arrow-color: var(--border-normal);
+				--arrow-color: var(--g-color-border-normal);
 
 				cursor: auto;
 			}
 		}
 
 		&:hover {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--g-color-border-accent);
 
 			color: var(--v-input-color);
 			background-color: var(--background-input);
-			border-color: var(--border-normal-alt);
+			border-color: var(--g-color-border-accent);
 		}
 
 		&:focus-within,
 		&.active {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--g-color-border-accent);
 
 			color: var(--v-input-color);
 			background-color: var(--background-input);
@@ -347,16 +347,16 @@ body {
 		}
 
 		&.disabled {
-			--arrow-color: var(--border-normal);
+			--arrow-color: var(--g-color-border-normal);
 
-			color: var(--foreground-subdued);
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal);
+			color: var(--g-color-foreground-subtle);
+			background-color: var(--g-color-background-subtle);
+			border-color: var(--g-color-border-normal);
 		}
 
 		.prefix,
 		.suffix {
-			color: var(--foreground-subdued);
+			color: var(--g-color-foreground-subtle);
 		}
 
 		.append {
@@ -426,7 +426,7 @@ body {
 
 			.prefix,
 			.suffix {
-				color: var(--foreground-subdued);
+				color: var(--g-color-foreground-subtle);
 			}
 		}
 

@@ -66,8 +66,8 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: var(--input-height);
-	background-color: var(--background-normal);
-	border: $sso-link-border-width var(--background-normal) solid;
+	background-color: var(--g-color-background-normal);
+	border: $sso-link-border-width var(--g-color-background-normal) solid;
 	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -77,7 +77,7 @@ export default defineComponent({
 		justify-content: center;
 		width: var(--input-height);
 		margin: -$sso-link-border-width;
-		background-color: var(--background-normal-alt);
+		background-color: var(--g-color-background-accent);
 		border-radius: var(--g-border-radius);
 
 		span {
@@ -93,7 +93,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--g-color-background-accent);
 	}
 
 	& + & {

@@ -101,7 +101,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-slider-color: var(--border-normal);
+	--v-slider-color: var(--g-color-border-normal);
 	--v-slider-thumb-color: var(--primary);
 	--v-slider-fill-color: var(--primary);
 }
@@ -122,15 +122,15 @@ body {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--foreground-subdued);
-			--v-slider-fill-color: var(--foreground-subdued);
+			--v-slider-thumb-color: var(--g-color-foreground-subtle);
+			--v-slider-fill-color: var(--g-color-foreground-subtle);
 		}
 
 		input {
 			width: 100%;
 			height: 4px;
 			padding: 8px 0;
-			background-color: var(--background-page);
+			background-color: var(--g-color-background-page);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
@@ -158,7 +158,7 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--background-page);
+				background: var(--g-color-background-page);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
@@ -237,7 +237,7 @@ body {
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: auto;
 			padding: 2px 6px;
-			color: var(--foreground-inverted);
+			color: var(--g-color-foreground-invert);
 			font-weight: 600;
 			background-color: var(--primary);
 			border-radius: var(--g-border-radius);

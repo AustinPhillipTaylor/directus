@@ -82,7 +82,7 @@ function useEdits() {
 	position: relative;
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
+	background-color: var(--g-color-background-page);
 	border-radius: var(--g-border-radius);
 }
 
@@ -117,9 +117,9 @@ function useEdits() {
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
 	padding-left: 6px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-style: italic;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--g-color-border-normal);
 }
 
 .comment-item .content :deep(img) {
@@ -133,7 +133,7 @@ function useEdits() {
 	height: 2px;
 	margin: 12px 0;
 	border: 0;
-	border-top: 2px solid var(--border-normal);
+	border-top: 2px solid var(--g-color-border-normal);
 }
 
 .comment-item .content :deep(mark) {
@@ -190,9 +190,9 @@ function useEdits() {
 	height: 40px;
 	background: linear-gradient(
 		180deg,
-		rgb(var(--background-page-rgb), 0) 0%,
-		rgb(var(--background-page-rgb), 0.8) 25%,
-		rgb(var(--background-page-rgb), 1) 100%
+		rgb(var(--g-color-background-page-rgb), 0) 0%,
+		rgb(var(--g-color-background-page-rgb), 0.8) 25%,
+		rgb(var(--g-color-background-page-rgb), 1) 100%
 	);
 	content: '';
 }
@@ -210,16 +210,16 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text span {
 	padding: 4px 12px 5px;
-	color: var(--foreground-subdued);
+	color: var(--g-color-foreground-subtle);
 	font-weight: 600;
 	font-size: 12px;
-	background-color: var(--background-normal);
+	background-color: var(--g-color-background-normal);
 	border-radius: 12px;
 	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 }
 
 .comment-item.expand .content .expand-text:hover span {
-	color: var(--foreground-inverted);
+	color: var(--g-color-foreground-invert);
 	background-color: var(--primary);
 }
 

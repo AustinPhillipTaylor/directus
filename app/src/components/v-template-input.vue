@@ -311,11 +311,11 @@ export default defineComponent({
 	padding: var(--input-padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
+	color: var(--g-color-foreground-normal);
 	font-family: var(--g-font-family-sans);
 	white-space: nowrap;
-	background-color: var(--background-page);
-	border: var(--g-border-width) solid var(--border-normal);
+	background-color: var(--g-color-background-page);
+	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -332,7 +332,7 @@ export default defineComponent({
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--g-color-border-accent);
 	}
 
 	&:focus-within {
