@@ -293,7 +293,7 @@ export default defineComponent({
 }
 
 .enabled .to {
-	color: var(--g-color-primary-subtle);
+	color: var(--g-color-primary-normal);
 }
 
 .drawer-content {
