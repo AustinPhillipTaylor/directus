@@ -67,7 +67,7 @@ export default defineComponent({
 }
 
 .md :deep(a) {
-	color: var(--g-color-primary-accent);
+	color: var(--g-color-primary-normal);
 	font-weight: 500;
 	text-decoration: none;
 }
@@ -392,7 +392,7 @@ export default defineComponent({
 }
 
 .md :deep(.heading-link:hover) {
-	color: var(--g-color-primary-accent);
+	color: var(--g-color-primary-normal);
 	text-decoration: none;
 }
 
