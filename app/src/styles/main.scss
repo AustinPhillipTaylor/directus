@@ -1,5 +1,4 @@
 @import 'base';
-@import 'colors';
 @import 'fonts';
 @import 'themes/dark';
 @import 'themes/light';
@@ -16,19 +15,23 @@
 @import 'lib/emoji-picker';
 
 body.light {
+	color-scheme: light;
 	@include light;
 }
 
 body.dark {
+	color-scheme: dark;
 	@include dark;
 }
 
 body.auto {
 	@media (prefers-color-scheme: dark) {
+		color-scheme: dark;
 		@include dark;
 	}
 
 	@media (prefers-color-scheme: light) {
+		color-scheme: light;
 		@include light;
 	}
 }

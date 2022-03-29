@@ -20,29 +20,29 @@ export const darkTheme: Theme = {
 			},
 			color: {
 				primary: {
-					normal: '#6644FF',
-					accent: '#DDDDFF',
-					subtle: '#4422DD',
+					normal: '#8866ff',
+					accent: '#D5C9FF',
+					subtle: '#2C2651',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#FFDDEE',
-					subtle: '#FF77BB',
+					accent: '#FFDBF3',
+					subtle: '#4A3349',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#EAFAF6',
-					subtle: '#2CBC9B',
+					accent: '#B6EEE0',
+					subtle: '#15403B',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#FEF0D3',
-					subtle: '#EDBA4A',
+					accent: '#FEEBC1',
+					subtle: '#493E25',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#F8D3D9',
-					subtle: '#CE3D55',
+					accent: '#F5C2CB',
+					subtle: '#43212C',
 				},
 				border: {
 					normal: '#30363D',
