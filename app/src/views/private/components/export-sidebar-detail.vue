@@ -544,8 +544,8 @@ async function exportDataFiles() {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	color: var(--white);
-	background-color: var(--primary);
-	border: var(--g-border-width) solid var(--primary);
+	background-color: var(--g-color-primary-normal);
+	border: var(--g-border-width) solid var(--g-color-primary-normal);
 	border-radius: var(--g-border-radius);
 
 	.type-text {
@@ -574,12 +574,12 @@ async function exportDataFiles() {
 	border-radius: var(--g-border-radius);
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--g-color-primary-subtle);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--g-color-primary-normal);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;

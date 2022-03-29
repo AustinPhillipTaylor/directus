@@ -50,7 +50,7 @@ export default defineComponent({
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--g-color-primary-normal)',
 			};
 		});
 
