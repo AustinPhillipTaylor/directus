@@ -16,14 +16,6 @@
 
 		<router-view v-else-if="!hydrating" />
 
-		<teleport to="#system-themes">
-			{{ lightThemeBase }}
-			{{ darkThemeBase }}
-		</teleport>
-		<teleport to="#theme-overrides">
-			{{ lightThemeOverrides }}
-			{{ darkThemeOverrides }}
-		</teleport>
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>
@@ -98,22 +90,6 @@ export default defineComponent({
 			return serverStore.info?.project?.custom_css || '';
 		});
 
-		const lightThemeBase = computed(() => {
-			return themeStore.getThemeCSS('light', 'base') || '';
-		});
-
-		const darkThemeBase = computed(() => {
-			return themeStore.getThemeCSS('dark', 'base') || '';
-		});
-
-		const lightThemeOverrides = computed(() => {
-			return themeStore.getThemeCSS('light', 'overrides') || '';
-		});
-
-		const darkThemeOverrides = computed(() => {
-			return themeStore.getThemeCSS('dark', 'overrides') || '';
-		});
-
 		const error = computed(() => appStore.error);
 
 		useSystem();
@@ -124,10 +100,6 @@ export default defineComponent({
 			brandStyle,
 			error,
 			customCSS,
-			lightThemeBase,
-			darkThemeBase,
-			lightThemeOverrides,
-			darkThemeOverrides,
 		};
 	},
 });

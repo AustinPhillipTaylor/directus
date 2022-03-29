@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
@@ -59,6 +61,10 @@ body.${mode} {
 		},
 	},
 	actions: {
+		/**
+		 * Store only stores info from public '/server/info' endpoint. We want themes/styles to
+		 * persist when logged out so once we hydrate there's no need to dehydrate.
+		 */
 		async hydrate() {
 			/** Pull in base themes first */
 			this.themeBase.dark = baseDark || {};
@@ -72,8 +78,16 @@ body.${mode} {
 			this.themeOverrides.light = overrides.light || {};
 		},
 
-		async dehydrate() {
-			this.$reset();
+		async populateStyles(styleTagID: string, version: ThemeVersions = 'base') {
+			const styleTag: HTMLStyleElement | null = document.querySelector(`style#${styleTagID}`);
+			if (!styleTag) {
+				return console.error(`Style tag with ID ${styleTagID} does not exist in document`);
+			}
+
+			const lightThemeStyle = this.getThemeCSS('light', version) || '';
+			const darkThemeStyle = this.getThemeCSS('dark', version) || '';
+
+			styleTag.textContent = `${lightThemeStyle}\n${darkThemeStyle}`;
 		},
 
 		async updateThemeOverrides(updates: ThemeOverrides) {
