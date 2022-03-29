@@ -10,7 +10,7 @@
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div ref="moduleNavEl" class="module-nav alt-colors">
+			<div ref="moduleNavEl" class="module-nav">
 				<project-info />
 
 				<div class="module-nav-content">
@@ -48,7 +48,6 @@
 			id="sidebar"
 			ref="sidebarEl"
 			role="contentinfo"
-			class="alt-colors"
 			aria-label="Module Sidebar"
 			:class="{ 'is-open': sidebarOpen }"
 			@click="openSidebar"
