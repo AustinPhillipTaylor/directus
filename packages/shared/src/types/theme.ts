@@ -1,5 +1,5 @@
 type Hex = `#${string}`;
-type Link = `var( --${string} )`;
+type Link = `var(--${string})`;
 type Pixels = `${number}px`;
 
 interface BaseColorVariants {
