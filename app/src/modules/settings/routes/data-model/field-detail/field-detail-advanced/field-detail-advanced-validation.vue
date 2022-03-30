@@ -44,12 +44,12 @@ const validationMessage = syncFieldDetailStoreProperty('field.meta.validation_me
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--g-font-family-mono);
+	--v-select-font-family: var(--g-font-family-mono);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--g-color-primary-normal);
 }
 
 .v-notice {
