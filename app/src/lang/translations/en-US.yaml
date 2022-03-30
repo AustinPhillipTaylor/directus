@@ -861,6 +861,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Roles & Permissions
 settings_project: Project Settings
+settings_theme: Themes & Styling
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 settings_translation_strings: Translation Strings
@@ -903,6 +904,7 @@ page_help_settings_project: "**Project Settings** — Your project's global conf
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
+page_help_settings_theming: "**Theme Editor** — Customize the light and dark theme to suit your project."
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
