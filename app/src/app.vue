@@ -23,7 +23,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted } from 'vue';
-import { useAppStore, useUserStore, useServerStore, useThemeStore } from '@/stores';
+import { useAppStore, useUserStore, useServerStore } from '@/stores';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import useSystem from '@/composables/use-system';
 
@@ -36,7 +36,6 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
-		const themeStore = useThemeStore();
 
 		const { hydrating } = toRefs(appStore);
 
