@@ -9,6 +9,7 @@ import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark } from '@/themes';
 import { parseTheme } from '@/utils/theming';
 import { merge } from 'lodash';
+import { deepDiff } from '@/utils/deep-diff-object';
 
 type ThemeVariants = 'dark' | 'light';
 type ThemeVersions = 'base' | 'overrides';
@@ -85,7 +86,7 @@ body.${mode} {
 
 			/** Get server info to pull overrides */
 			const serverInfo = await api.get(`/server/info`, { params: { limit: -1 } });
-			const overrides: ThemeOverrides = serverInfo.data.data.project['theme_overrides'];
+			const overrides: ThemeOverrides = serverInfo.data.data.project['theme_overrides'] || {};
 
 			this.themeOverrides.dark = overrides.dark || {};
 			this.themeOverrides.light = overrides.light || {};
@@ -103,9 +104,35 @@ body.${mode} {
 			styleTag.textContent = `${lightThemeStyle}\n${darkThemeStyle}`;
 		},
 
+		/**
+		 * When updates are passed, deep object paths are compared to the same
+		 * paths in the base themes. The updates are narrowed to only the values
+		 * that have been altered, and whose path exists in the base theme. Extra
+		 * properties are ignored.
+		 *
+		 * @param updates Changes relative to base themes
+		 *
+		 */
 		async updateThemeOverrides(updates: ThemeOverrides) {
+			const changes: ThemeOverrides = {};
+			for (const theme in updates) {
+				if (Object.keys(this.themeBase).includes(theme)) {
+					const diff = deepDiff(
+						this.themeBase[theme as ThemeVariants].theme,
+						updates[theme as ThemeVariants] as ThemeOverrides
+					);
+					/**
+					 * If diff is an empty object, that means the local overrides are
+					 * equal to the base theme. In that case, we still want to set it
+					 * in changes. Sending up an empty object will delete the
+					 * theme's overrides entry from the database.
+					 */
+					changes[theme as ThemeVariants] = diff;
+				}
+			}
+
 			try {
-				const response = await api.patch(`/settings/themes`, updates);
+				const response = await api.patch(`/settings/themes`, changes);
 				this.themeOverrides = response.data.data.theme_overrides;
 				notify({
 					title: i18n.global.t('theme_update_success'),
