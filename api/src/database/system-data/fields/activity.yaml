@@ -13,20 +13,20 @@ fields:
       choices:
         - text: $t:field_options.directus_activity.create
           value: create
-          foreground: 'var(--primary)'
-          background: 'var(--primary-25)'
+          foreground: 'var(--g-color-primary-normal)'
+          background: 'var(--g-color-primary-subtle)'
         - text: $t:field_options.directus_activity.update
           value: update
-          foreground: 'var(--blue)'
-          background: 'var(--blue-25)'
+          foreground: 'var(--g-color-secondary-normal)'
+          background: 'var(--g-color-secondary-subtle)'
         - text: $t:field_options.directus_activity.delete
           value: delete
-          foreground: 'var(--danger)'
-          background: 'var(--danger-25)'
+          foreground: 'var(--g-color-danger-normal)'
+          background: 'var(--g-color-danger-subtle)'
         - text: $t:field_options.directus_activity.login
           value: login
-          foreground: 'var(--purple)'
-          background: 'var(--purple-25)'
+          foreground: 'var(--g-color-warning-normal)'
+          background: 'var(--g-color-warning-subtle)'
     width: half
 
   - field: collection
@@ -48,7 +48,7 @@ fields:
   - field: comment
     display: formatted-value
     display_options:
-      color: 'var(--foreground-subdued)'
+      color: 'var(--g-color-foreground-subtle)'
     width: half
 
   - field: user_agent
