@@ -20,8 +20,11 @@ export class SettingsService extends ItemsService {
 
 		/**
 		 * We only want to overwrite a theme's overrides if it's explicitly passed.
-		 * So here we'll get the current overrides then combine them with the
-		 * overrides from the request body.
+		 * For instance, if only the dark theme is passed, we don't want to touch
+		 * the light theme.
+		 *
+		 * Here we'll get the current overrides. Afterward, we'll combine them with the
+		 * overrides from the request body to build the full patch.
 		 */
 		const record = await this.readSingleton(query);
 		const currentOverrides = record.theme_overrides || {};
