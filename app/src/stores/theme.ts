@@ -8,11 +8,15 @@ import { i18n } from '@/lang';
 import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark } from '@/themes';
 import { parseTheme } from '@/utils/theming';
+import { merge } from 'lodash';
 
 type ThemeVariants = 'dark' | 'light';
 type ThemeVersions = 'base' | 'overrides';
 type ThemeBase = Record<ThemeVariants, Theme>;
-type ThemeOverrides = Record<ThemeVariants, Theme['theme']>;
+type ThemeOverrides = Partial<Record<ThemeVariants, Theme['theme']>>;
+
+export const SYSTEM_THEME_STYLE_TAG_ID = 'system-themes';
+export const THEME_OVERRIDES_STYLE_TAG_ID = 'theme-overrides';
 
 export const useThemeStore = defineStore({
 	id: 'themesStore',
@@ -32,7 +36,7 @@ export const useThemeStore = defineStore({
 
 				if (version === 'overrides') {
 					if (state.themeOverrides[mode]) {
-						themeVariables = parseTheme(state.themeOverrides[mode]);
+						themeVariables = parseTheme(state.themeOverrides[mode]!);
 					}
 				} else {
 					if (state.themeBase[mode]?.theme) {
@@ -57,6 +61,15 @@ body.${mode} {
 }`;
 
 				return resolvedThemeCSS;
+			};
+		},
+		getMergedTheme: (state) => {
+			return (mode: ThemeVariants = 'light') => {
+				/**
+				 * Base themes store entire theme/metadata (title, desc., etc.), thus, when
+				 * targeting `themeBase` we have to get the `theme` sub-property
+				 */
+				return merge({}, state.themeBase[mode].theme, state.themeOverrides[mode]);
 			};
 		},
 	},
@@ -97,6 +110,7 @@ body.${mode} {
 				notify({
 					title: i18n.global.t('theme_update_success'),
 				});
+				this.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
 			} catch (err: any) {
 				unexpectedError(err);
 			}
