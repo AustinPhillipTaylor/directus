@@ -1,26 +1,9 @@
 import { Theme } from '@directus/shared/types';
-
-function flattenObject(object: Record<any, any> = {}, join = '-') {
-	const result: Record<string, any> = {};
-	/** loop through the object */
-	for (const key in object) {
-		if (typeof object[key] === 'object' && !Array.isArray(object[key])) {
-			const temp = flattenObject(object[key]);
-			for (const subKey in temp) {
-				/** Store temp in result */
-				result[key + join + subKey] = temp[subKey];
-			}
-		} else {
-			/** No more nested objects, store value */
-			result[key] = object[key];
-		}
-	}
-	return result;
-}
+import { flatten } from 'flat';
 
 function listFromObj(object: Record<any, any> = {}, prefix = '', suffix = '', join = '-') {
 	/** First we'll flatten object */
-	const flattenedObject = flattenObject(object, join);
+	const flattenedObject: Record<string, any> = flatten(object, { delimiter: join });
 
 	/** Next we'll map the object to an array and prefix/suffix */
 	const list: string[] = Object.keys(flattenedObject).map((key) => `${prefix}${key}: ${flattenedObject[key]}${suffix}`);
