@@ -1,4 +1,4 @@
-import { transform, isEqual, isPlainObject, merge } from 'lodash';
+import { transform, isEqual, isEqualWith, isPlainObject, merge } from 'lodash';
 
 /**
  * Adapted from https://gist.github.com/Yimiprod/7ee176597fef230d1451
@@ -10,7 +10,11 @@ import { transform, isEqual, isPlainObject, merge } from 'lodash';
  * @return {Object}           Values/nested objects from deviation that differed from
  *                            base object. Ignores keys that did not exist in base.
  */
-export function deepDiff(base: Record<string, any>, deviation: Record<string, any>): Record<string, any> {
+export function deepDiff(
+	base: Record<string, any>,
+	deviation: Record<string, any>,
+	caseSensitive = false
+): Record<string, any> {
 	const diff = transform(
 		/**
 		 * Merge to ensure deviation has all of the same keys as base. Could
@@ -23,11 +27,24 @@ export function deepDiff(base: Record<string, any>, deviation: Record<string, an
 		 */
 		merge({}, base, deviation),
 		function (result: any, value: any, key: string) {
-			if (base[key] !== undefined && !isEqual(base[key], value)) {
+			if (base[key] !== undefined && !isEqualWith(base[key], value, handleCaseSensitivity(caseSensitive))) {
 				result[key] = isPlainObject(value) && isPlainObject(base[key]) ? deepDiff(base[key], value) : value;
 			}
 		},
 		{}
 	);
 	return diff;
+}
+
+function handleCaseSensitivity(caseSensitive = false) {
+	return (valA: any, valB: any) => {
+		if (typeof valA === 'string' && typeof valB === 'string') {
+			if (caseSensitive) {
+				return isEqual(valA, valB);
+			}
+			return isEqual(valA.toLocaleLowerCase(), valB.toLocaleLowerCase());
+		}
+		// Undefined in isEqualWith falls back to default isEqual function
+		return undefined;
+	};
 }
