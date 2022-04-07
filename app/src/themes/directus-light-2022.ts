@@ -21,28 +21,28 @@ export const lightTheme: Theme = {
 			color: {
 				primary: {
 					normal: '#6644FF',
-					accent: '#4422DD',
-					subtle: '#DDDDFF',
+					accent: '#553BC8',
+					subtle: '#F3EAFF',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#FF77BB',
-					subtle: '#FFDDEE',
+					accent: '#DA84BF',
+					subtle: '#FFEEF9',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#2CBC9B',
-					subtle: '#EAFAF6',
+					accent: '#2EB090',
+					subtle: '#E4F8EF',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#EDBA4A',
-					subtle: '#FEF0D3',
+					accent: '#D8AA49',
+					subtle: '#FFF2DD',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#CE3D55',
-					subtle: '#F8D3D9',
+					accent: '#BB4859',
+					subtle: '#FFECEC',
 				},
 				border: {
 					normal: '#D3DAE4',
@@ -54,7 +54,7 @@ export const lightTheme: Theme = {
 					accent: '#E4EAF1',
 					subtle: '#F7FAFC',
 					page: '#FFFFFF',
-					invert: '#18222F',
+					invert: '#0D1117',
 				},
 				foreground: {
 					normal: '#4F5464',
