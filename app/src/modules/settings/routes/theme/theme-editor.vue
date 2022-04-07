@@ -85,7 +85,7 @@ export default defineComponent({
 				if (field.schema === undefined) field.schema = {} as Field['schema'];
 				field.meta!.field = field.field;
 				field.type = 'string';
-				field.schema!.is_nullable = field.schema?.default_value || false;
+				field.schema!.is_nullable = field.schema?.is_nullable || false;
 				field.schema!.default_value = field.schema?.default_value || baseValues.value[field.field] || '#cccccc';
 
 				return field;

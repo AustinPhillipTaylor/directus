@@ -91,7 +91,7 @@ body.${mode} {
 				return flatten(this.getMergedTheme(mode as ThemeVariants));
 			};
 		},
-		getBaseThemeFieldValues: (state): (() => Record<string, any>) => {
+		getBaseThemeFieldValues: (state): ((mode?: string) => Record<string, any>) => {
 			return (mode = 'light') => {
 				return flatten(state.themeBase[mode].theme);
 			};
