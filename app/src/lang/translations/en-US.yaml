@@ -1151,6 +1151,73 @@ field_options:
     basemaps_style: Mapbox Style
     files_divider_title: Files & Thumbnails
     overrides_divider_title: App Overrides
+    theme_overrides:
+      colors:
+        primary_normal: Primary
+        primary_accent: Primary Accent
+        primary_subtle: Primary Subtle
+        secondary_normal: Secondary
+        secondary_accent: Secondary Accent
+        secondary_subtle: Secondary Subtle
+        success_normal: Success
+        success_accent: Success Accent
+        success_subtle: Success Subtle
+        warning_normal: Warning
+        warning_accent: Warning Accent
+        warning_subtle: Warning Subtle
+        danger_normal: Danger
+        danger_accent: Danger Accent
+        danger_subtle: Danger Subtle
+        border_normal: Border Normal
+        border_accent: Border Accent
+        border_subtle: Border Subtle
+        background_normal: Background Normal
+        background_accent: Background Accent
+        background_subtle: Background Subtle
+        background_page: Background Page
+        background_invert: Background Invert
+        foreground_normal: Foreground Normal
+        foreground_accent: Foreground Accent
+        foreground_subtle: Foreground Subtle
+        foreground_invert: Foreground Invert
+        module_background_normal: Background
+        module_background_hover: Background Hover
+        module_background_active: Background Active
+        module_foreground_normal: Foreground
+        module_foreground_hover: Foreground Hover
+        module_foreground_active: Foreground Active
+      sections:
+        colors:
+          title: Color Variables
+          description: >-
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        foreground:
+          title: Text & Foreground
+          description: >-
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        background:
+          title: Background Colors
+          description: >-
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        border:
+          title: Border Options
+          description: >-
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        module:
+          title: Module Bar
+          description: >-
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
   directus_activity:
     login: Login
     create: Create
@@ -1639,6 +1706,9 @@ interfaces:
     header_color: Header Color
     start_open: Start Open
     start_closed: Start Closed
+  system-theme:
+    color_group: Theme Color Picker Group
+    color_picker: Theme Color Picker
 displays:
   translations:
     translations: Translations
