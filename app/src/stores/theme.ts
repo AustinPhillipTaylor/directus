@@ -8,10 +8,11 @@ import { i18n } from '@/lang';
 import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark } from '@/themes';
 import { parseTheme } from '@/utils/theming';
+import { unflatten, flatten } from 'flat';
 import { merge } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
 
-type ThemeVariants = 'dark' | 'light';
+type ThemeVariants = 'dark' | 'light' | string;
 type ThemeVersions = 'base' | 'overrides';
 type ThemeBase = Record<ThemeVariants, Theme>;
 type ThemeOverrides = Partial<Record<ThemeVariants, Theme['theme']>>;
@@ -19,12 +20,24 @@ type ThemeOverrides = Partial<Record<ThemeVariants, Theme['theme']>>;
 export const SYSTEM_THEME_STYLE_TAG_ID = 'system-themes';
 export const THEME_OVERRIDES_STYLE_TAG_ID = 'theme-overrides';
 
+const availableThemes = ['light', 'dark'];
+
 export const useThemeStore = defineStore({
 	id: 'themesStore',
 	state: () => ({
 		themeBase: {} as ThemeBase,
 		/** For now, the theme overrides don't need to define the entire theme. Only the alterations. */
 		themeOverrides: {} as ThemeOverrides,
+		/**
+		 * Default to light theme -
+		 * This is entirely separate from the active theme in the app (handled by the users store).
+		 * We use this property to keep track of the theme currently being edited. When the
+		 * Theme Editor module is loaded, this will be updated to initially reflect the user's
+		 * currently selected theme (unless a theme is specified in the URL). We can't populate this
+		 * on load (nor do we really need to), because the theme store is loaded and active on all
+		 * routes, even unauthenticated routes, i.e. the login screen.
+		 */
+		selectedTheme: 'light',
 	}),
 	getters: {
 		/**
@@ -73,6 +86,16 @@ body.${mode} {
 				return merge({}, state.themeBase[mode].theme, state.themeOverrides[mode]);
 			};
 		},
+		getThemeFieldValues() {
+			return (mode = 'light'): (() => Record<string, any>) => {
+				return flatten(this.getMergedTheme(mode as ThemeVariants));
+			};
+		},
+		getBaseThemeFieldValues: (state): (() => Record<string, any>) => {
+			return (mode = 'light') => {
+				return flatten(state.themeBase[mode].theme);
+			};
+		},
 	},
 	actions: {
 		/**
@@ -110,17 +133,26 @@ body.${mode} {
 		 * that have been altered, and whose path exists in the base theme. Extra
 		 * properties are ignored.
 		 *
-		 * @param updates Changes relative to base themes
+		 * @param updates Updates object in the form
+		 *  {
+		 *  	[theme name]: {
+		 *  		'full.setting.path': value,
+		 *  		...
+		 *  	}
+		 *  }
 		 *
 		 */
-		async updateThemeOverrides(updates: ThemeOverrides) {
+		async updateThemeOverrides(updates: Record<string, any>) {
 			const changes: ThemeOverrides = {};
 			for (const theme in updates) {
 				if (Object.keys(this.themeBase).includes(theme)) {
-					const diff = deepDiff(
-						this.themeBase[theme as ThemeVariants].theme,
-						updates[theme as ThemeVariants] as ThemeOverrides
-					);
+					// Unflatten the list of updates
+					const expanded: ThemeOverrides = unflatten(updates[theme]);
+					// What we send up will completely overwrite the current overrides,
+					// so we need to make sure to merge the new overrides into the current
+					const mergedOverrides = merge(this.themeOverrides[theme] || {}, expanded);
+					// Return edits that differ from base theme
+					const diff = deepDiff(this.themeBase[theme as ThemeVariants].theme, mergedOverrides);
 					/**
 					 * If diff is an empty object, that means the local overrides are
 					 * equal to the base theme. In that case, we still want to set it
@@ -140,6 +172,13 @@ body.${mode} {
 				this.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
 			} catch (err: any) {
 				unexpectedError(err);
+			}
+		},
+		setSelectedTheme(theme: string) {
+			if (availableThemes.includes(theme)) {
+				this.selectedTheme = theme;
+			} else {
+				this.selectedTheme = availableThemes[0];
 			}
 		},
 	},

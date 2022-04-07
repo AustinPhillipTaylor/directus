@@ -1,6 +1,6 @@
 import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useThemeStore, useUserStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -19,6 +19,7 @@ import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
+import { User } from '@directus/shared/types';
 
 export default defineModule({
 	id: 'settings',
@@ -36,9 +37,39 @@ export default defineModule({
 			component: Project,
 		},
 		{
-			name: 'settings-theme-editor',
 			path: 'themes',
-			component: ThemeEditor,
+			component: RouterPass,
+			children: [
+				{
+					path: '',
+					redirect: () => {
+						const userStore = useUserStore();
+						let userSetTheme = (userStore.currentUser as User)?.theme || 'light';
+						if (userSetTheme === 'auto') {
+							if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+								userSetTheme = 'dark';
+							} else {
+								userSetTheme = 'light';
+							}
+						}
+
+						return {
+							name: 'settings-theme-editor',
+							params: { theme: userSetTheme },
+						};
+					},
+				},
+				{
+					name: 'settings-theme-editor',
+					path: ':theme',
+					component: ThemeEditor,
+					beforeEnter(to) {
+						const themeStore = useThemeStore();
+						const theme = to.params.theme as string;
+						themeStore.setSelectedTheme(theme);
+					},
+				},
+			],
 		},
 		{
 			path: 'data-model',
