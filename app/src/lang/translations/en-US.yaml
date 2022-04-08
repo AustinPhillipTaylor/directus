@@ -1186,6 +1186,9 @@ field_options:
         module_foreground_normal: Foreground
         module_foreground_hover: Foreground Hover
         module_foreground_active: Foreground Active
+      border:
+        width: Border Width
+        radius: Border Radius
       sections:
         colors:
           title: Color Variables
