@@ -435,6 +435,7 @@ fields:
     hidden: true
     options:
       fields:
+        # ---------- Colors ----------
         - field: colors_divider
           meta:
             interface: presentation-divider
@@ -445,7 +446,7 @@ fields:
               - alias
               - no-data
             width: full
-
+        # ---------- Primary Color Group ----------
         - field: colors_primary
           meta:
             width: half
@@ -481,7 +482,7 @@ fields:
               desiredContrast: 4.7
               endBuffer: .2
               baseBuffer: .2
-
+        # ---------- Secondary Color Group ----------
         - field: colors_secondary
           meta:
             width: half
@@ -517,7 +518,7 @@ fields:
               desiredContrast: 4.7
               endBuffer: .2
               baseBuffer: .2
-
+        # ---------- Success Color Group ----------
         - field: colors_success
           meta:
             width: half
@@ -553,7 +554,7 @@ fields:
               desiredContrast: 4.7
               endBuffer: .2
               baseBuffer: .2
-
+        # ---------- Warning Color Group ----------
         - field: colors_warning
           meta:
             width: half
@@ -589,7 +590,7 @@ fields:
               desiredContrast: 4.7
               endBuffer: .15
               baseBuffer: .2
-
+        # ---------- Danger Color Group ----------
         - field: colors_danger
           meta:
             width: half
@@ -625,7 +626,7 @@ fields:
               desiredContrast: 4.7
               endBuffer: .45
               baseBuffer: .2
-
+        # ---------- Foreground ----------
         - field: foreground_divider
           meta:
             interface: presentation-divider
@@ -636,6 +637,69 @@ fields:
               - alias
               - no-data
             width: full
+        - field: global.font.family.sans
+          name: $t:field_options.directus_settings.theme_overrides.font.sans
+          type: string
+          meta:
+            interface: select-dropdown
+            width: half
+            options:
+              choices:
+                - text: Inter
+                  value: Inter
+                - text: Open Sans
+                  value: Open Sans
+                - text: Fira Sans
+                  value: Fira Sans
+                - text: Noto Sans
+                  value: Noto Sans
+                - text: Roboto
+                  value: Roboto
+                - text: Merriweather Sans
+                  value: Merriweather Sans
+              allowOther: true
+        - field: global.font.family.serif
+          name: $t:field_options.directus_settings.theme_overrides.font.serif
+          type: string
+          meta:
+            interface: select-dropdown
+            width: half
+            options:
+              choices:
+                - text: Merriweather
+                  value: Merriweather
+                - text: Playfair Display
+                  value: Playfair Display
+                - text: Noto Serif
+                  value: Noto Serif
+                - text: Source Serif Pro
+                  value: Source Serif Pro
+                - text: Roboto Serif
+                  value: Roboto Serif
+                - text: Roboto Slab
+                  value: Roboto Slab
+              allowOther: true
+        - field: global.font.family.mono
+          name: $t:field_options.directus_settings.theme_overrides.font.mono
+          type: string
+          meta:
+            interface: select-dropdown
+            width: half
+            options:
+              choices:
+                - text: Fira Mono
+                  value: Fira Mono
+                - text: Fira Code
+                  value: Fira Code
+                - text: Source Code Pro
+                  value: Source Code Pro
+                - text: Roboto Mono
+                  value: Roboto Mono
+                - text: JetBrains Mono
+                  value: JetBrains Mono
+                - text: Noto Sans Mono
+                  value: Noto Sans Mono
+              allowOther: true
         - field: global.color.foreground.normal
           name: $t:field_options.directus_settings.theme_overrides.colors.foreground_normal
           meta:
@@ -656,6 +720,7 @@ fields:
           meta:
             width: half
             interface: theme-color-picker
+        # ---------- Background ----------
         - field: background_divider
           meta:
             interface: presentation-divider
@@ -691,6 +756,7 @@ fields:
           meta:
             width: half
             interface: theme-color-picker
+        # ---------- Border ----------
         - field: border_divider
           meta:
             interface: presentation-divider
@@ -701,6 +767,18 @@ fields:
               - alias
               - no-data
             width: full
+        - field: global.border.width
+          name: $t:field_options.directus_settings.theme_overrides.border.width
+          type: string
+          meta:
+            width: half
+            interface: input
+        - field: global.border.radius
+          name: $t:field_options.directus_settings.theme_overrides.border.radius
+          type: string
+          meta:
+            width: half
+            interface: input
         - field: global.color.border.normal
           name: $t:field_options.directus_settings.theme_overrides.colors.border_normal
           meta:
