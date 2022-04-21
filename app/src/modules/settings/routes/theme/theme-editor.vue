@@ -42,9 +42,9 @@
 	</private-view>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useCollection } from '@directus/shared/composables';
 import { useServerStore, useThemeStore, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores';
@@ -54,87 +54,69 @@ import { useRouter } from 'vue-router';
 import { clone } from 'lodash';
 import { Field, FieldMeta } from '@directus/shared/types';
 
-export default defineComponent({
-	components: { SettingsNavigation },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const serverStore = useServerStore();
-		const themeStore = useThemeStore();
+const serverStore = useServerStore();
+const themeStore = useThemeStore();
 
-		const { fields } = useCollection('directus_settings');
+const { fields } = useCollection('directus_settings');
 
-		const themeName = ref(themeStore.selectedTheme);
+const themeName = ref(themeStore.selectedTheme);
 
-		const initialValues = ref(themeStore.getThemeFieldValues(themeName.value));
+const initialValues = ref(themeStore.getThemeFieldValues(themeName.value));
 
-		const baseValues = ref(themeStore.getBaseThemeFieldValues(themeName.value));
+const baseValues = ref(themeStore.getBaseThemeFieldValues(themeName.value));
 
-		const themeFields = fields.value
-			.find((field) => {
-				return field.field === 'theme_overrides';
-			})
-			?.meta?.options?.fields.map((field: Field) => {
-				/**
-				 * Populate common properties here so we don't
-				 * have to manually write it out in the API
-				 */
-				if (field.meta === undefined) field.meta = {} as FieldMeta;
-				if (field.schema === undefined) field.schema = {} as Field['schema'];
-				field.meta!.field = field.field;
-				field.type = 'string';
-				field.schema!.is_nullable = field.schema?.is_nullable || false;
-				field.schema!.default_value = field.schema?.default_value || baseValues.value[field.field] || '#cccccc';
+const themeFields = fields.value
+	.find((field) => {
+		return field.field === 'theme_overrides';
+	})
+	?.meta?.options?.fields.map((field: Field) => {
+		/**
+		 * Populate common properties here so we don't
+		 * have to manually write it out in the API
+		 */
+		if (field.meta === undefined) field.meta = {} as FieldMeta;
+		if (field.schema === undefined) field.schema = {} as Field['schema'];
+		field.meta!.field = field.field;
+		field.type = 'string';
+		field.schema!.is_nullable = field.schema?.is_nullable || false;
+		field.schema!.default_value = field.schema?.default_value || baseValues.value[field.field] || '#cccccc';
 
-				return field;
-			});
+		return field;
+	});
 
-		const edits = ref<{ [key: string]: any } | null>(null);
+const edits = ref<{ [key: string]: any } | null>(null);
 
-		const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
+const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
-		const saving = ref(false);
+const saving = ref(false);
 
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) save();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			themeFields,
-			initialValues,
-			edits,
-			hasEdits,
-			saving,
-			confirmLeave,
-			leaveTo,
-			save,
-			discardAndLeave,
-		};
-
-		async function save() {
-			if (edits.value === null) return;
-			saving.value = true;
-			await themeStore.updateThemeOverrides({ [themeName.value]: edits.value });
-			await serverStore.hydrate();
-			await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
-			edits.value = null;
-			saving.value = false;
-			initialValues.value = clone(themeStore.getThemeFieldValues(themeName.value));
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-	},
+useShortcut('meta+s', () => {
+	if (hasEdits.value) save();
 });
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function save() {
+	if (edits.value === null) return;
+	saving.value = true;
+	await themeStore.updateThemeOverrides({ [themeName.value]: edits.value });
+	await serverStore.hydrate();
+	await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
+	edits.value = null;
+	saving.value = false;
+	initialValues.value = clone(themeStore.getThemeFieldValues(themeName.value));
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 </script>
 
 <style lang="scss" scoped>

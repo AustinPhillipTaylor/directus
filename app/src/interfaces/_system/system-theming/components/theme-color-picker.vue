@@ -17,48 +17,35 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { ValidationError } from '@directus/shared/types';
-import { computed, defineComponent, PropType, ref, Ref } from 'vue';
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const hiddenSourceInput: Ref<HTMLInputElement | null> = ref(null);
+import { computed, ref, Ref } from 'vue';
 
-		const inputValue = computed(() => {
-			return props.modelValue;
-		});
-
-		return {
-			inputValue,
-			emitUpdated,
-			hiddenSourceInput,
-			activateColorPicker,
-		};
-
-		function emitUpdated(event: string) {
-			emit('update:modelValue', event);
-		}
-
-		function activateColorPicker() {
-			hiddenSourceInput.value!.click();
-		}
-	},
+interface Props {
+	modelValue: string;
+	disabled?: boolean;
+	validationErrors?: ValidationError[];
+}
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	validationErrors: () => [],
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const hiddenSourceInput: Ref<HTMLInputElement | null> = ref(null);
+
+const inputValue = computed(() => {
+	return props.modelValue;
+});
+
+function emitUpdated(event: string) {
+	emit('update:modelValue', event);
+}
+
+function activateColorPicker() {
+	hiddenSourceInput.value!.click();
+}
 </script>
 
 <style lang="scss" scoped>

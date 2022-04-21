@@ -3,48 +3,37 @@
 </template>
 
 <script lang="ts">
-import { ValidationError } from '@directus/shared/types';
-import { defineComponent, PropType } from 'vue';
-import themeColorPicker from '../components/theme-color-picker.vue';
-export default defineComponent({
+export default {
 	name: 'ThemeColorPickerGroup',
-	components: { themeColorPicker },
-	props: {
-		field: {
-			type: String,
-			required: true,
-		},
-		value: {
-			type: String,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActiveFields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-	},
-	emits: ['input'],
+};
+</script>
+
+<script lang="ts" setup>
+import { ValidationError } from '@directus/shared/types';
+import themeColorPicker from '../components/theme-color-picker.vue';
+
+interface Props {
+	value: string;
+	disabled?: boolean;
+	validationErrors?: ValidationError[];
+	field: string;
+	primaryKey: string | number;
+	batchMode?: boolean;
+	batchActiveFields?: string[];
+	loading?: boolean;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	validationErrors: () => [],
+	batchMode: false,
+	batchActiveFields: () => [],
+	loading: false,
 });
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const emit = defineEmits(['input']);
 </script>
 
 <style lang="scss" scoped>

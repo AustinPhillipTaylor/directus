@@ -32,109 +32,74 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { Field, ValidationError } from '@directus/shared/types';
-import { computed, defineComponent, PropType, ref, Ref } from 'vue';
+import { computed, ref, Ref } from 'vue';
 import themeColorGenerator from '../components/theme-color-generator.vue';
 import { merge } from 'lodash';
-export default defineComponent({
-	name: 'ThemeColorPickerGroup',
-	components: { themeColorGenerator },
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		fields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		values: {
-			type: Object as PropType<Record<string, string>>,
-			required: true,
-		},
-		initialValues: {
-			type: Object as PropType<Record<string, string>>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActiveFields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-	},
-	emits: ['apply'],
-	setup(props, { emit }) {
-		const source = props.fields.find((field) => {
-			return field.meta?.options?.source === true;
-		});
 
-		const editableFields = props.fields.filter((field) => {
-			return !(field.meta?.options?.generated === true);
-		});
-
-		const generatedFields = props.fields.filter((field) => {
-			// We need a source to generate from
-			if (!source) return false;
-			return field.meta?.options?.generated === true;
-		});
-
-		const editableFieldValues: Ref<Record<string, any>> = ref({});
-
-		for (const field of editableFields) {
-			editableFieldValues.value[field.field] = computed(() => {
-				return props.values[field.field] || props.initialValues[field.field] || '#cccccc';
-			});
-		}
-
-		const generatedFieldValues: Ref<Record<string, any>> = ref({});
-
-		for (const field of generatedFields) {
-			generatedFieldValues.value[field.field] = {
-				value: computed(() => getThemeSetting(field.field)),
-				source: computed(() => getThemeSetting(source?.field)),
-				mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
-			};
-		}
-
-		return {
-			editableFields,
-			generatedFields,
-			editableFieldValues,
-			generatedFieldValues,
-			getThemeSetting,
-			apply,
-		};
-
-		function apply(field: string, value: string) {
-			const newValues = merge(props.values, { [field]: value });
-			emit('apply', newValues);
-		}
-
-		function getThemeSetting(field?: string) {
-			return props.values[field!] || props.initialValues[field!] || undefined;
-		}
-	},
+interface Props {
+	values: Record<string, string>;
+	disabled?: boolean;
+	validationErrors?: ValidationError[];
+	field: Field;
+	fields: Field[];
+	primaryKey: string | number;
+	initialValues: Record<string, string>;
+	batchMode?: boolean;
+	batchActiveFields?: string[];
+	loading?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	validationErrors: () => [],
+	batchMode: false,
+	batchActiveFields: () => [],
+	loading: false,
 });
+
+const emit = defineEmits(['apply']);
+
+const source = props.fields.find((field) => {
+	return field.meta?.options?.source === true;
+});
+
+const editableFields = props.fields.filter((field) => {
+	return !(field.meta?.options?.generated === true);
+});
+
+const generatedFields = props.fields.filter((field) => {
+	// We need a source to generate from
+	if (!source) return false;
+	return field.meta?.options?.generated === true;
+});
+
+const editableFieldValues: Ref<Record<string, any>> = ref({});
+
+for (const field of editableFields) {
+	editableFieldValues.value[field.field] = computed(() => {
+		return props.values[field.field] || props.initialValues[field.field] || '#cccccc';
+	});
+}
+
+const generatedFieldValues: Ref<Record<string, any>> = ref({});
+
+for (const field of generatedFields) {
+	generatedFieldValues.value[field.field] = {
+		value: computed(() => getThemeSetting(field.field)),
+		source: computed(() => getThemeSetting(source?.field)),
+		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
+	};
+}
+
+function apply(field: string, value: string) {
+	const newValues = merge(props.values, { [field]: value });
+	emit('apply', newValues);
+}
+
+function getThemeSetting(field?: string) {
+	return props.values[field!] || props.initialValues[field!] || undefined;
+}
 </script>
 
 <style lang="scss" scoped>

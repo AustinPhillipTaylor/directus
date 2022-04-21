@@ -9,57 +9,37 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { generateVariant } from '@/utils/theming';
 import { ValidationError } from '@directus/shared/types';
-import { defineComponent, PropType, watch } from 'vue';
-export default defineComponent({
-	props: {
-		source: {
-			type: String,
-			required: false,
-			default: () => '#ffffff',
-		},
-		mix: {
-			type: String,
-			required: false,
-			default: () => '#000000',
-		},
-		desiredContrast: {
-			type: Number,
-			required: false,
-			default: () => 4.5,
-		},
-		endBuffer: {
-			type: Number,
-			required: false,
-			default: () => 0.1,
-		},
-		baseBuffer: {
-			type: Number,
-			required: false,
-			default: () => 0.1,
-		},
-		modelValue: {
-			type: String,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		watch([() => props.source, () => props.mix], ([source, mix]) => {
-			const newColor = generateVariant(source, mix, props.desiredContrast, props.endBuffer, props.baseBuffer);
-			emit('update:modelValue', newColor);
-		});
-	},
+import { watch } from 'vue';
+
+interface Props {
+	modelValue: string;
+	disabled?: boolean;
+	validationErrors?: ValidationError[];
+	source?: string;
+	mix?: string;
+	desiredContrast?: number;
+	endBuffer?: number;
+	baseBuffer?: number;
+}
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: '',
+	disabled: false,
+	validationErrors: () => [],
+	source: '#FFFFFF',
+	mix: '#000000',
+	desiredContrast: 4.5,
+	endBuffer: 0.1,
+	baseBuffer: 0.1,
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+watch([() => props.source, () => props.mix], ([source, mix]) => {
+	const newColor = generateVariant(source, mix, props.desiredContrast, props.endBuffer, props.baseBuffer);
+	emit('update:modelValue', newColor);
 });
 </script>
 
