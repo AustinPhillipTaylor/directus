@@ -1518,6 +1518,11 @@ interfaces:
     inline_title_label: Show title inside line
     margin_top: Margin Top
     margin_top_label: Increase Top Margin
+  presentation-text-block:
+    text-block: Text Block
+    description: Display a static block of text
+    text: Text Content
+    text_placeholder: Enter any text...
   select-dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice

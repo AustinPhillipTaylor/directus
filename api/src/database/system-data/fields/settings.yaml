@@ -446,6 +446,15 @@ fields:
               - alias
               - no-data
             width: full
+        - field: colors_description
+          meta:
+            interface: presentation-text-block
+            options:
+              text: $t:field_options.directus_settings.theme_overrides.sections.colors.description
+            special:
+              - alias
+              - no-data
+            width: full
         # ---------- Primary Color Group ----------
         - field: colors_primary
           meta:
@@ -637,6 +646,16 @@ fields:
               - alias
               - no-data
             width: full
+        - field: foreground_description
+          meta:
+            interface: presentation-text-block
+            options:
+              text: $t:field_options.directus_settings.theme_overrides.sections.foreground.description
+            special:
+              - alias
+              - no-data
+            width: full
+
         - field: global.font.family.sans
           name: $t:field_options.directus_settings.theme_overrides.font.sans
           type: string
@@ -731,6 +750,16 @@ fields:
               - alias
               - no-data
             width: full
+        - field: background_description
+          meta:
+            interface: presentation-text-block
+            options:
+              text: $t:field_options.directus_settings.theme_overrides.sections.background.description
+            special:
+              - alias
+              - no-data
+            width: full
+
         - field: global.color.background.normal
           name: $t:field_options.directus_settings.theme_overrides.colors.background_normal
           meta:
@@ -767,6 +796,16 @@ fields:
               - alias
               - no-data
             width: full
+        - field: border_description
+          meta:
+            interface: presentation-text-block
+            options:
+              text: $t:field_options.directus_settings.theme_overrides.sections.border.description
+            special:
+              - alias
+              - no-data
+            width: full
+
         - field: global.border.width
           name: $t:field_options.directus_settings.theme_overrides.border.width
           type: string
