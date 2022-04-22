@@ -1,11 +1,5 @@
 <template>
 	<div>
-		<!-- <template v-for="(curField, index) in editableFields" :key="index">
-			<theme-color-picker
-				:model-value="editableFieldValues[curField.field]"
-				@update:model-value="apply(curField.field, $event)"
-			></theme-color-picker>
-		</template> -->
 		<v-form
 			:initial-values="initialValues"
 			:fields="editableFields"

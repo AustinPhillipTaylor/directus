@@ -43,17 +43,15 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import { useCollection } from '@directus/shared/composables';
 import { useServerStore, useThemeStore, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
 import { clone } from 'lodash';
-import { Field, FieldMeta } from '@directus/shared/types';
-
+import { RawField } from '@directus/shared/types';
+import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 const router = useRouter();
@@ -61,32 +59,21 @@ const router = useRouter();
 const serverStore = useServerStore();
 const themeStore = useThemeStore();
 
-const { fields } = useCollection('directus_settings');
-
 const themeName = ref(themeStore.selectedTheme);
 
 const initialValues = ref(themeStore.getThemeFieldValues(themeName.value));
 
 const baseValues = ref(themeStore.getBaseThemeFieldValues(themeName.value));
 
-const themeFields = fields.value
-	.find((field) => {
-		return field.field === 'theme_overrides';
-	})
-	?.meta?.options?.fields.map((field: Field) => {
-		/**
-		 * Populate common properties here so we don't
-		 * have to manually write it out in the API
-		 */
-		if (field.meta === undefined) field.meta = {} as FieldMeta;
-		if (field.schema === undefined) field.schema = {} as Field['schema'];
-		field.meta!.field = field.field;
-		field.type = 'string';
-		field.schema!.is_nullable = field.schema?.is_nullable || false;
-		field.schema!.default_value = field.schema?.default_value || baseValues.value[field.field] || '#cccccc';
-
-		return field;
-	});
+const themeFields = themeStore.getThemeEditorFields.map((field: Partial<RawField>) => {
+	if (field.schema && field.field) {
+		field.schema.default_value = baseValues.value[field.field] || '';
+	}
+	if (field.meta && field.field && !field.meta.field) {
+		field.meta.field = field.field;
+	}
+	return field;
+});
 
 const edits = ref<{ [key: string]: any } | null>(null);
 

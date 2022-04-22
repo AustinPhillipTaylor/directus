@@ -6,7 +6,7 @@ import { defineStore } from 'pinia';
 import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
 import { Theme } from '@directus/shared/types';
-import { baseLight, baseDark } from '@/themes';
+import { baseLight, baseDark, themeEditorFields } from '@/themes';
 import { parseTheme } from '@/utils/theming';
 import { unflatten, flatten } from 'flat';
 import { merge } from 'lodash';
@@ -95,6 +95,9 @@ body.${mode} {
 			return (mode = 'light') => {
 				return flatten(state.themeBase[mode].theme);
 			};
+		},
+		getThemeEditorFields() {
+			return themeEditorFields;
 		},
 	},
 	actions: {
