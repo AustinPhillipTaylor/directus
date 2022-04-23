@@ -1194,6 +1194,8 @@ field_options:
         serif: Serif Font
         mono: Monospace Font
       sections:
+        select_theme:
+          title: Select Theme to Edit
         colors:
           title: Color Variables
           description: >-
@@ -1224,7 +1226,7 @@ field_options:
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
             nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        text-styles:
+        text_styles:
           title: Text Styles
           description: >-
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor

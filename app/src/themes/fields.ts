@@ -97,16 +97,19 @@ export const fields: Partial<RawField>[] = [
 	color('global.color.border.accent', 'colors.border_accent'),
 	color('global.color.border.subtle', 'colors.border_subtle'),
 	/* ---------- Text Styles  ---------- */
-	divider('text_styles_divider', 'sections.text-styles.title'),
-	description('text_styles_description', 'sections.text-styles.description'),
+	divider('text_styles_divider', 'sections.text_styles.title'),
+	description('text_styles_description', 'sections.text_styles.description'),
 	/* ---------- Module Bar  ---------- */
 	divider('module_divider', 'sections.module.title'),
 	description('module_description', 'sections.module.description'),
+
 	color('components.module.background.normal', 'colors.module_background_normal'),
-	color('components.module.background.hover', 'colors.module_background_hover'),
-	color('components.module.background.active', 'colors.module_background_active'),
 	color('components.module.foreground.normal', 'colors.module_foreground_normal'),
+
+	color('components.module.background.hover', 'colors.module_background_hover'),
 	color('components.module.foreground.hover', 'colors.module_foreground_hover'),
+
+	color('components.module.background.active', 'colors.module_background_active'),
 	color('components.module.foreground.active', 'colors.module_foreground_active'),
 ];
 
