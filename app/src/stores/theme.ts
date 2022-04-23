@@ -9,7 +9,7 @@ import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
 import { parseTheme } from '@/utils/theming';
 import { unflatten, flatten } from 'flat';
-import { merge } from 'lodash';
+import { isArray, merge, mergeWith } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
 
 type ThemeVariants = 'dark' | 'light' | string;
@@ -64,7 +64,7 @@ export const useThemeStore = defineStore({
 				 * a little weird in the page source if we don't do this.
 				 */
 				const resolvedThemeCSS = `\n\n\
-body.${mode} {
+.theme-${mode}, body.${mode} {
 	${themeVariables.replace(/\n/g, '\n\t')}
 }
 
@@ -83,17 +83,41 @@ body.${mode} {
 				 * Base themes store entire theme/metadata (title, desc., etc.), thus, when
 				 * targeting `themeBase` we have to get the `theme` sub-property
 				 */
-				return merge({}, state.themeBase[mode].theme, state.themeOverrides[mode]);
+
+				return mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
+					/**
+					 * This will help handling font selection. Select inputs return a string, but font entries
+					 * are arrays of font names. Fonts are a special case where we want all backups to persist
+					 * from the base theme. So if we run into an array, we'll add the incoming value to the
+					 * beginning of the existing array, instead of overwriting it.
+					 */
+					if (isArray(obj)) {
+						if (typeof src === 'string') {
+							obj.unshift(src);
+							return obj;
+						}
+						return src.concat(obj);
+					}
+				});
 			};
 		},
 		getThemeFieldValues() {
-			return (mode = 'light'): (() => Record<string, any>) => {
-				return flatten(this.getMergedTheme(mode as ThemeVariants));
+			return (mode = 'light'): Record<string, any> => {
+				const rawValues: Record<string, any> = flatten(this.getMergedTheme(mode as ThemeVariants), { safe: true });
+				const values = Object.keys(rawValues).reduce<Record<string, any>>((acc, key) => {
+					if (isArray(rawValues[key])) {
+						acc[key] = rawValues[key][0];
+					} else {
+						acc[key] = rawValues[key];
+					}
+					return acc;
+				}, {});
+				return values;
 			};
 		},
 		getBaseThemeFieldValues: (state): ((mode?: string) => Record<string, any>) => {
 			return (mode = 'light') => {
-				return flatten(state.themeBase[mode].theme);
+				return flatten(state.themeBase[mode].theme, { safe: true });
 			};
 		},
 		getThemeEditorFields() {

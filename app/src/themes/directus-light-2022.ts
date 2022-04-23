@@ -7,16 +7,27 @@ export const lightTheme: Theme = {
 	theme: {
 		global: {
 			font: {
-				size: '16px',
 				family: {
-					sans: '"Inter", -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-					serif: '"Merriweather", serif',
-					mono: '"Fira Mono", monospace, sans-serif',
+					sans: [
+						'Inter',
+						'-apple-system',
+						'BlinkMacSystemFont',
+						'Segoe UI',
+						'Roboto',
+						'Helvetica',
+						'Arial',
+						'sans-serif',
+						'Apple Color Emoji',
+						'Segoe UI Emoji',
+						'Segoe UI Symbol',
+					],
+					serif: ['Merriweather', 'serif'],
+					mono: ['Fira Mono', 'monospace', 'sans-serif'],
 				},
 			},
 			border: {
-				width: '2px',
-				radius: '6px',
+				width: 2,
+				radius: 6,
 			},
 			color: {
 				primary: {

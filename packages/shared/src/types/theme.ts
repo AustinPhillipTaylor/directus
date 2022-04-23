@@ -1,6 +1,5 @@
 type Hex = `#${string}`;
 type Link = `var(--${string})`;
-type Pixels = `${number}px`;
 
 interface BaseColorVariants {
 	normal?: Hex | Link;
@@ -10,11 +9,10 @@ interface BaseColorVariants {
 
 interface GlobalSettings {
 	font?: {
-		size?: Pixels;
 		family?: {
-			sans?: string;
-			serif?: string;
-			mono?: string;
+			sans?: string | string[];
+			serif?: string | string[];
+			mono?: string | string[];
 		};
 	};
 	color?: {
@@ -33,13 +31,13 @@ interface GlobalSettings {
 		border?: BaseColorVariants;
 	};
 	border?: {
-		width?: Pixels;
-		radius?: Pixels;
+		width?: number;
+		radius?: number;
 	};
 }
 
 interface SubProperty {
-	[key: string]: string | Pixels | Hex | Link | SubProperty;
+	[key: string]: string | number | Hex | Link | SubProperty;
 }
 
 interface ComponentSettings {

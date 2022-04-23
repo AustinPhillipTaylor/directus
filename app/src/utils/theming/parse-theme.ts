@@ -1,19 +1,32 @@
 import { Theme } from '@directus/shared/types';
 import { flatten } from 'flat';
+import { isArray } from 'lodash';
 
 function listFromObj(object: Record<any, any> = {}, prefix = '', suffix = '', join = '-') {
 	/** First we'll flatten object */
-	const flattenedObject: Record<string, any> = flatten(object, { delimiter: join });
+	const flattenedObject: Record<string, any> = flatten(object, {
+		delimiter: join,
+		safe: true, // Preserve array keys
+	});
 
-	/** Next we'll map the object to an array and prefix/suffix */
-	const list: string[] = Object.keys(flattenedObject).map((key) => `${prefix}${key}: ${flattenedObject[key]}${suffix}`);
+	/** Map the object to an array, add prefix/suffix */
+	const cssVars: string[] = Object.keys(flattenedObject).map((key) => {
+		let value = flattenedObject[key];
+		// Concatenate arrays
+		if (isArray(value)) {
+			value = value.join(', ');
+		}
+		// Convert numbers to pixel values
+		else if (!isNaN(Number(value))) {
+			value = `${value}px`;
+		}
+		return `${prefix}${key}: ${value}${suffix}`;
+	});
 
-	return list;
+	return cssVars;
 }
 
 export default function parseTheme(theme: Theme['theme']): string {
-	/** NOTE: Should probably use something like AJV to validate the theme schema */
-
 	const outputVariables: string[] = [];
 
 	if (theme.global) {

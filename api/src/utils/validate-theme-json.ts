@@ -10,14 +10,13 @@ import { Theme } from '@directus/shared/types';
 const hex = Joi.string()
 	.trim()
 	.pattern(/^#(([\da-fA-F]{3}){1,2}|([\da-fA-F]{4}){1,2})$/, 'Hexadecimal color');
-// Matched css variable references i.e. var( --g-color-background-normal )
+// Matched css variable references i.e. var(--g-color-background-normal)
 const link = Joi.string()
 	.trim()
 	.pattern(/^var\(\s*--[-\w]+\s*\)$/, 'CSS variable link');
-// Matches a pixel amount i.e. 16px
-const pixels = Joi.string()
-	.trim()
-	.pattern(/^\d*px$/, 'Amount in pixels');
+
+// Arrays of strings. Will be joined by commas on style generation.
+const list = Joi.array().items(Joi.string());
 
 const baseColorVariants = Joi.object({
 	normal: Joi.alternatives([hex, link]),
@@ -27,11 +26,10 @@ const baseColorVariants = Joi.object({
 
 const globalSettings = Joi.object({
 	font: Joi.object({
-		size: pixels,
 		family: Joi.object({
-			sans: Joi.string(),
-			serif: Joi.string(),
-			mono: Joi.string(),
+			sans: Joi.alternatives([Joi.string(), list]),
+			serif: Joi.alternatives([Joi.string(), list]),
+			mono: Joi.alternatives([Joi.string(), list]),
 		}),
 	}),
 	color: Joi.object({
@@ -50,13 +48,13 @@ const globalSettings = Joi.object({
 		border: baseColorVariants,
 	}),
 	border: Joi.object({
-		width: pixels,
-		radius: pixels,
+		width: Joi.number(),
+		radius: Joi.number(),
 	}),
 });
 
 const subProperty = Joi.object()
-	.pattern(/./, Joi.alternatives([Joi.string(), pixels, hex, link, Joi.link('#subProperty')]))
+	.pattern(/./, Joi.alternatives([Joi.string(), Joi.number(), hex, link, list, Joi.link('#subProperty')]))
 	.id('subProperty');
 
 const componentSettings = Joi.object().pattern(/./, subProperty);
