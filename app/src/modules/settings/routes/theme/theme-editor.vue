@@ -17,7 +17,7 @@
 			<settings-navigation />
 		</template>
 
-		<div class="settings">
+		<div class="theme-options">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
 		</div>
 
@@ -43,13 +43,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, toRefs } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useServerStore, useThemeStore, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
-import { clone } from 'lodash';
+import { isArray } from 'lodash';
 import { RawField } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
@@ -61,13 +61,15 @@ const themeStore = useThemeStore();
 
 const themeName = ref(themeStore.selectedTheme);
 
-const initialValues = ref(themeStore.getThemeFieldValues(themeName.value));
+const { defaultValues, initialValues } = themeStore.getValues(themeName.value);
 
-const baseValues = ref(themeStore.getBaseThemeFieldValues(themeName.value));
-
-const themeFields = themeStore.getThemeEditorFields.map((field: Partial<RawField>) => {
+const themeFields = themeStore.getFields.map((field: Partial<RawField>) => {
 	if (field.schema && field.field) {
-		field.schema.default_value = baseValues.value[field.field] || '';
+		if (isArray(defaultValues[field.field])) {
+			field.schema.default_value = defaultValues[field.field][0] || '';
+		} else {
+			field.schema.default_value = defaultValues[field.field] || '';
+		}
 	}
 	if (field.meta && field.field && !field.meta.field) {
 		field.meta.field = field.field;
@@ -95,7 +97,6 @@ async function save() {
 	await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
 	edits.value = null;
 	saving.value = false;
-	initialValues.value = clone(themeStore.getThemeFieldValues(themeName.value));
 }
 
 function discardAndLeave() {
@@ -107,7 +108,7 @@ function discardAndLeave() {
 </script>
 
 <style lang="scss" scoped>
-.settings {
+.theme-options {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 }

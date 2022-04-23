@@ -7,15 +7,16 @@ import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
 import { Theme } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
-import { parseTheme } from '@/utils/theming';
-import { unflatten, flatten } from 'flat';
+import { resolveThemeVariables, resolveFieldValues } from '@/utils/theming';
+import { unflatten } from 'flat';
 import { isArray, merge, mergeWith } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
+import { computed } from 'vue';
 
 type ThemeVariants = 'dark' | 'light' | string;
 type ThemeVersions = 'base' | 'overrides';
 type ThemeBase = Record<ThemeVariants, Theme>;
-type ThemeOverrides = Partial<Record<ThemeVariants, Theme['theme']>>;
+type ThemeOverrides = Record<ThemeVariants, Theme['theme']>;
 
 export const SYSTEM_THEME_STYLE_TAG_ID = 'system-themes';
 export const THEME_OVERRIDES_STYLE_TAG_ID = 'theme-overrides';
@@ -48,20 +49,17 @@ export const useThemeStore = defineStore({
 			return (mode: ThemeVariants = 'light', version: ThemeVersions = 'base'): string => {
 				let themeVariables = '';
 
-				if (version === 'overrides') {
-					if (state.themeOverrides[mode]) {
-						themeVariables = parseTheme(state.themeOverrides[mode]!);
-					}
-				} else {
-					if (state.themeBase[mode]?.theme) {
-						themeVariables = parseTheme(state.themeBase[mode].theme);
-					}
+				if (version === 'overrides' && state.themeOverrides[mode]) {
+					themeVariables = resolveThemeVariables(state.themeOverrides[mode]);
+				}
+				if (version === 'base' && state.themeBase[mode]?.theme) {
+					themeVariables = resolveThemeVariables(state.themeBase[mode].theme);
 				}
 
 				/**
 				 * You'll notice we add a couple tabs to the line breaks in the
 				 * themeVariables string. This is purely cosmetic. The indentation
-				 * a little weird in the page source if we don't do this.
+				 * is a little weird in the page source if we don't do this.
 				 */
 				const resolvedThemeCSS = `\n\n\
 .theme-${mode}, body.${mode} {
@@ -80,10 +78,9 @@ export const useThemeStore = defineStore({
 		getMergedTheme: (state) => {
 			return (mode: ThemeVariants = 'light') => {
 				/**
-				 * Base themes store entire theme/metadata (title, desc., etc.), thus, when
+				 * Base themes store entire theme/metadata (title, desc., etc.). When
 				 * targeting `themeBase` we have to get the `theme` sub-property
 				 */
-
 				return mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
 					/**
 					 * This will help handling font selection. Select inputs return a string, but font entries
@@ -101,26 +98,17 @@ export const useThemeStore = defineStore({
 				});
 			};
 		},
-		getThemeFieldValues() {
-			return (mode = 'light'): Record<string, any> => {
-				const rawValues: Record<string, any> = flatten(this.getMergedTheme(mode as ThemeVariants), { safe: true });
-				const values = Object.keys(rawValues).reduce<Record<string, any>>((acc, key) => {
-					if (isArray(rawValues[key])) {
-						acc[key] = rawValues[key][0];
-					} else {
-						acc[key] = rawValues[key];
-					}
-					return acc;
-				}, {});
-				return values;
+		getValues(): (mode?: ThemeVariants) => Record<string, any> {
+			return (mode: ThemeVariants = 'light') => {
+				const defaultValues = resolveFieldValues(this.themeBase[mode].theme) || {};
+				const initialValues = computed(() => resolveFieldValues(this.getMergedTheme(mode)) || {});
+				return {
+					defaultValues,
+					initialValues,
+				};
 			};
 		},
-		getBaseThemeFieldValues: (state): ((mode?: string) => Record<string, any>) => {
-			return (mode = 'light') => {
-				return flatten(state.themeBase[mode].theme, { safe: true });
-			};
-		},
-		getThemeEditorFields() {
+		getFields() {
 			return themeEditorFields;
 		},
 	},
