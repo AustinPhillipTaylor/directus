@@ -123,6 +123,9 @@ function integer(fieldId: string, namePath: string, min: number, max: number) {
 				max,
 			},
 		},
+		schema: {
+			default_value: 0,
+		},
 	};
 	return merge({}, base, overrides);
 }
@@ -170,6 +173,9 @@ function color(fieldId: string, namePath: string) {
 		meta: {
 			interface: 'theme-color-picker',
 		},
+		schema: {
+			default_value: '#cccccc',
+		},
 	};
 	return merge({}, base, overrides);
 }
@@ -190,6 +196,9 @@ function generatedColor(fieldId: string, namePath: string, mixFieldId: string, o
 					},
 					options
 				),
+			},
+			schema: {
+				default_value: '#cccccc',
 			},
 		},
 	};
@@ -257,7 +266,6 @@ function baseField(fieldId: string, namePath = '') {
 		name: namePath ? _t(namePath) : '',
 		meta: {
 			field: fieldId,
-			width: 'half',
 			interface: 'input',
 		},
 		schema: {
