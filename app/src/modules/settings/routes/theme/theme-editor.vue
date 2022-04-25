@@ -17,7 +17,7 @@
 			<settings-navigation />
 		</template>
 
-		<theme-selection></theme-selection>
+		<theme-selection :current-theme="selectedTheme"></theme-selection>
 
 		<div class="theme-options">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
@@ -45,40 +45,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import ThemeSelection from './components/theme-selection.vue';
 import { useServerStore, useThemeStore, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
-import { useRouter } from 'vue-router';
-import { isArray } from 'lodash';
-import { RawField } from '@directus/shared/types';
+import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
 const { t } = useI18n();
 
 const router = useRouter();
+const route = useRoute();
 
 const serverStore = useServerStore();
 const themeStore = useThemeStore();
 
-const themeName = ref(themeStore.selectedTheme);
+const { selectedTheme } = storeToRefs(themeStore);
 
-const { defaultValues, initialValues } = themeStore.getValues(themeName.value);
+const initialValues = ref(themeStore.getInitialValues(selectedTheme.value));
 
-const themeFields = themeStore.getFields.map((field: Partial<RawField>) => {
-	if (field.schema && field.field) {
-		if (isArray(defaultValues[field.field])) {
-			field.schema.default_value = defaultValues[field.field][0] || '';
-		} else {
-			field.schema.default_value = defaultValues[field.field] || '';
-		}
-	}
-	if (field.meta && field.field && !field.meta.field) {
-		field.meta.field = field.field;
-	}
-	return field;
-});
+const themeFields = ref(themeStore.getFields(selectedTheme.value));
 
 const edits = ref<{ [key: string]: any } | null>(null);
 
@@ -92,10 +80,21 @@ useShortcut('meta+s', () => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+watch(
+	() => route.params.theme,
+	(newTheme) => {
+		themeStore.setSelectedTheme(newTheme);
+		themeFields.value = themeStore.getFields(selectedTheme.value);
+		initialValues.value = themeStore.getInitialValues(selectedTheme.value);
+		edits.value = null;
+	}
+);
+
 async function save() {
 	if (edits.value === null) return;
 	saving.value = true;
-	await themeStore.updateThemeOverrides({ [themeName.value]: edits.value });
+	await themeStore.updateThemeOverrides({ [selectedTheme.value]: edits.value });
+	initialValues.value = themeStore.getInitialValues(selectedTheme.value);
 	await serverStore.hydrate();
 	await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
 	edits.value = null;
@@ -104,7 +103,7 @@ async function save() {
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	edits.value = {};
+	edits.value = null;
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }

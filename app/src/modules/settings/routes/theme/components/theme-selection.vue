@@ -14,19 +14,53 @@
 				</template>
 			</v-divider>
 			<div class="theme-previews full">
-				<!-- eslint-disable-next-line vue/no-v-html -->
-				<span v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-light half" v-html="ThemePreview" />
-				<!-- eslint-disable-next-line vue/no-v-html -->
-				<span v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-dark half-right" v-html="ThemePreview" />
+				<div
+					:class="[
+						'theme-card',
+						{
+							'current-theme': currentTheme === 'light',
+						},
+					]"
+				>
+					<router-link to="./light">
+						<!-- eslint-disable-next-line vue/no-v-html -->
+						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-light" v-html="ThemePreview" />
+						<div class="card-info">Light Theme</div>
+					</router-link>
+				</div>
+				<div
+					:class="[
+						'theme-card',
+						{
+							'current-theme': currentTheme === 'dark',
+						},
+					]"
+				>
+					<router-link to="./dark">
+						<!-- eslint-disable-next-line vue/no-v-html -->
+						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-dark" v-html="ThemePreview" />
+						<div class="card-info">Dark Theme</div>
+					</router-link>
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
+// @ts-expect-error: Errors without '*.svg' type declaration
 import ThemePreview from '../assets/theme-preview.svg?raw';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
+
+interface Props {
+	currentTheme?: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = withDefaults(defineProps<Props>(), {
+	currentTheme: 'light',
+});
 
 function isSVG(path: string) {
 	return path.startsWith('<svg');
@@ -38,11 +72,63 @@ function isSVG(path: string) {
 .theme-selection {
 	padding: var(--content-padding);
 	.theme-previews {
-		display: contents;
-	}
+		display: flex;
+		grid-gap: 32px;
+		flex-direction: row;
 
-	.preview-thumbnail {
-		justify-self: center;
+		.theme-card {
+			display: flex;
+			flex-direction: column;
+			flex: auto;
+			min-width: 200px;
+			max-width: 240px;
+			overflow: hidden;
+			border-radius: var(--g-border-radius);
+			border: var(--g-border-width) solid var(--g-color-border-normal);
+			cursor: pointer;
+
+			&.current-theme {
+				border-color: var(--g-color-primary-normal);
+				color: var(--g-color-primary-normal);
+				font-weight: 700;
+				.card-info {
+					border-color: var(--g-color-primary-normal);
+					background-color: var(--g-color-primary-subtle);
+				}
+			}
+
+			&:not(.current-theme) {
+				&:hover {
+					border-color: var(--g-color-border-accent);
+					color: var(--g-color-primary-normal);
+					.card-info {
+						border-color: var(--g-color-border-accent);
+					}
+				}
+				&:active {
+					border-color: var(--g-color-primary-normal);
+					color: var(--g-color-primary-normal);
+					.card-info {
+						border-color: var(--g-color-primary-normal);
+						background-color: var(--g-color-primary-subtle);
+					}
+				}
+			}
+
+			.preview-thumbnail {
+				width: 100%;
+				height: auto;
+				font-size: 0;
+				line-height: 0;
+			}
+
+			.card-info {
+				display: flex;
+				padding: 12px;
+				border-top: var(--g-border-width) solid var(--g-color-border-normal);
+				background-color: var(--g-color-background-page);
+			}
+		}
 	}
 }
 

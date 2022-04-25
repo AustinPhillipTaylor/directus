@@ -5,13 +5,12 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
 import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
-import { Theme } from '@directus/shared/types';
+import { RawField, Theme } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
 import { resolveThemeVariables, resolveFieldValues } from '@/utils/theming';
 import { unflatten } from 'flat';
 import { isArray, merge, mergeWith } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
-import { computed } from 'vue';
 
 type ThemeVariants = 'dark' | 'light' | string;
 type ThemeVersions = 'base' | 'overrides';
@@ -98,18 +97,38 @@ export const useThemeStore = defineStore({
 				});
 			};
 		},
-		getValues(): (mode?: ThemeVariants) => Record<string, any> {
+		getInitialValues() {
 			return (mode: ThemeVariants = 'light') => {
-				const defaultValues = resolveFieldValues(this.themeBase[mode].theme) || {};
-				const initialValues = computed(() => resolveFieldValues(this.getMergedTheme(mode)) || {});
-				return {
-					defaultValues,
-					initialValues,
-				};
+				return resolveFieldValues(this.getMergedTheme(mode)) || {};
+			};
+		},
+		getDefaultValues() {
+			return (mode: ThemeVariants = 'light') => {
+				return resolveFieldValues(this.themeBase[mode].theme) || {};
 			};
 		},
 		getFields() {
-			return themeEditorFields;
+			return (mode: ThemeVariants = 'light') => {
+				/**
+				 * Defaults are dependent on theme mode/base theme. As a result, we can't populate them
+				 * on field generation. We'll populate defaults here, now that we know the mode.
+				 */
+				const defaultValues = this.getDefaultValues(mode);
+				const fieldsWithDefaults = themeEditorFields.map((field: Partial<RawField>) => {
+					if (field.schema && field.field) {
+						if (isArray(defaultValues[field.field])) {
+							field.schema.default_value = defaultValues[field.field][0] || '';
+						} else {
+							field.schema.default_value = defaultValues[field.field] || '';
+						}
+					}
+					if (field.meta && field.field && !field.meta.field) {
+						field.meta.field = field.field;
+					}
+					return field;
+				});
+				return fieldsWithDefaults;
+			};
 		},
 	},
 	actions: {
@@ -189,12 +208,16 @@ export const useThemeStore = defineStore({
 				unexpectedError(err);
 			}
 		},
-		setSelectedTheme(theme: string) {
+		setSelectedTheme(theme: string | string[]) {
+			if (isArray(theme)) {
+				theme = theme[0];
+			}
 			if (availableThemes.includes(theme)) {
 				this.selectedTheme = theme;
 			} else {
 				this.selectedTheme = availableThemes[0];
 			}
+			return true;
 		},
 	},
 });
