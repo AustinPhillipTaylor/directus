@@ -97,8 +97,8 @@ export const fields: Partial<RawField>[] = [
 	color('global.color.border.accent', 'colors.border_accent'),
 	color('global.color.border.subtle', 'colors.border_subtle'),
 	/* ---------- Text Styles  ---------- */
-	divider('text_styles_divider', 'sections.text_styles.title'),
-	description('text_styles_description', 'sections.text_styles.description'),
+	// divider('text_styles_divider', 'sections.text_styles.title'),
+	// description('text_styles_description', 'sections.text_styles.description'),
 	/* ---------- Module Bar  ---------- */
 	divider('module_divider', 'sections.module.title'),
 	description('module_description', 'sections.module.description'),
