@@ -10,7 +10,7 @@
 			:loading="loading"
 			:disabled="disabled"
 			nested
-			@update:model-value="$emit('apply', $event)"
+			@update:model-value="updateSource($event)"
 		/>
 		<template v-for="(curField, index) in generatedFields" :key="index">
 			<theme-color-generator
@@ -20,7 +20,7 @@
 				:base-buffer="curField.meta?.options?.baseBuffer"
 				:end-buffer="curField.meta?.options?.endBuffer"
 				:model-value="generatedFieldValues[curField.field].value"
-				@update:model-value="apply(curField.field, $event)"
+				@update:model-value="queueEdits({ [curField.field]: $event })"
 			></theme-color-generator>
 		</template>
 	</div>
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { Field, ValidationError } from '@directus/shared/types';
-import { computed, ref, Ref } from 'vue';
+import { computed, nextTick, ref, Ref, watch } from 'vue';
 import themeColorGenerator from '../components/theme-color-generator.vue';
 import { merge } from 'lodash';
 
@@ -54,9 +54,25 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['apply']);
 
-const source = props.fields.find((field) => {
+const edits = ref<{ [key: string]: any } | null>(null);
+
+const sourceField = props.fields.find((field) => {
 	return field.meta?.options?.source === true;
 });
+
+const sourceValue = ref(
+	(sourceField?.field && props.values[sourceField?.field]) || getThemeSetting(sourceField?.field)
+);
+
+watch(
+	() => props.values,
+	(values) => {
+		const value = sourceField?.field && values[sourceField?.field];
+		if (value) {
+			sourceValue.value = value;
+		}
+	}
+);
 
 const editableFields = props.fields.filter((field) => {
 	return !(field.meta?.options?.generated === true);
@@ -64,7 +80,7 @@ const editableFields = props.fields.filter((field) => {
 
 const generatedFields = props.fields.filter((field) => {
 	// We need a source to generate from
-	if (!source) return false;
+	if (!sourceField) return false;
 	return field.meta?.options?.generated === true;
 });
 
@@ -80,19 +96,51 @@ const generatedFieldValues: Ref<Record<string, any>> = ref({});
 
 for (const field of generatedFields) {
 	generatedFieldValues.value[field.field] = {
-		value: computed(() => getThemeSetting(field.field)),
-		source: computed(() => getThemeSetting(source?.field)),
+		value: computed(() => props.values[field.field] || getThemeSetting(field.field)),
+		source: sourceValue,
 		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
 	};
 }
 
-function apply(field: string, value: string) {
-	const newValues = merge(props.values, { [field]: value });
-	emit('apply', newValues);
-}
-
 function getThemeSetting(field?: string) {
 	return props.values[field!] || props.initialValues[field!] || undefined;
+}
+
+function queueEdits(update: { [key: string]: any }) {
+	if (!edits.value) edits.value = {};
+	edits.value = {
+		...edits.value,
+		...update,
+	};
+}
+
+async function updateSource(update: Record<string, any>) {
+	if (!sourceField?.field) return;
+	if (!update[sourceField.field]) {
+		edits.value = null;
+		emit('apply', {});
+		return;
+	}
+
+	// Update may include all values in group, however, we only want the source field.
+	const sourceUpdate = { [sourceField.field]: update[sourceField.field] };
+
+	// Update the sourceValue ref to trigger a re-generation of the color generators
+	sourceValue.value = update[sourceField.field];
+
+	// Add source field change to queue
+	queueEdits(sourceUpdate);
+
+	/**
+	 * Wait for DOM to update (using `nextTick`) so all generated fields in `v-for` can emit
+	 * their generated values. The `theme-color-generator` invokes `queueEdits()` on
+	 * `modelValue` updates. As a result, once we pass `nextTick`, edits from the source
+	 * and all generators dependent on the source will be queued in `edits.value`.
+	 */
+	await nextTick();
+	const newValues = merge(props.values, edits.value || {});
+	edits.value = null;
+	emit('apply', newValues);
 }
 </script>
 
