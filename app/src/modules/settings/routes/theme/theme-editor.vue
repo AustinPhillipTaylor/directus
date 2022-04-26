@@ -48,7 +48,7 @@
 import { ref, computed, watch } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import ThemeSelection from './components/theme-selection.vue';
-import { useServerStore, useThemeStore, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores';
+import { useServerStore, useThemeStore } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
 import { useRouter, useRoute } from 'vue-router';
@@ -96,7 +96,7 @@ async function save() {
 	await themeStore.updateThemeOverrides({ [selectedTheme.value]: edits.value });
 	initialValues.value = themeStore.getInitialValues(selectedTheme.value);
 	await serverStore.hydrate();
-	await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
+	await themeStore.populateStyles();
 	edits.value = null;
 	saving.value = false;
 }

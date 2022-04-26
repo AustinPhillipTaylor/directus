@@ -13,12 +13,10 @@ import { isArray, merge, mergeWith } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
 
 type ThemeVariants = 'dark' | 'light' | string;
-type ThemeVersions = 'base' | 'overrides';
 type ThemeBase = Record<ThemeVariants, Theme>;
 type ThemeOverrides = Record<ThemeVariants, Theme['theme']>;
 
 export const SYSTEM_THEME_STYLE_TAG_ID = 'system-themes';
-export const THEME_OVERRIDES_STYLE_TAG_ID = 'theme-overrides';
 
 const availableThemes = ['light', 'dark'];
 
@@ -42,18 +40,12 @@ export const useThemeStore = defineStore({
 	getters: {
 		/**
 		 * Getter returns function -
-		 * Usage: getThemeCSS( 'dark' | 'light', 'base' | 'overrides' )
+		 * Usage: getThemeCSS( 'dark' | 'light' )
 		 */
-		getThemeCSS: (state) => {
-			return (mode: ThemeVariants = 'light', version: ThemeVersions = 'base'): string => {
+		getThemeCSS() {
+			return (mode: ThemeVariants = 'light'): string => {
 				let themeVariables = '';
-
-				if (version === 'overrides' && state.themeOverrides[mode]) {
-					themeVariables = resolveThemeVariables(state.themeOverrides[mode]);
-				}
-				if (version === 'base' && state.themeBase[mode]?.theme) {
-					themeVariables = resolveThemeVariables(state.themeBase[mode].theme);
-				}
+				themeVariables = resolveThemeVariables(this.getMergedTheme(mode));
 
 				/**
 				 * You'll notice we add a couple tabs to the line breaks in the
@@ -80,11 +72,9 @@ export const useThemeStore = defineStore({
 				 * Base themes store entire theme/metadata (title, desc., etc.). When
 				 * targeting `themeBase` we have to get the `theme` sub-property
 				 */
-				return mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
+				const test = mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
 					/**
-					 * This will help handling font selection. Select inputs return a string, but font entries
-					 * are arrays of font names. Fonts are a special case where we want all backups to persist
-					 * from the base theme. So if we run into an array, we'll add the incoming value to the
+					 * If we run into an array, we'll add the incoming value to the
 					 * beginning of the existing array, instead of overwriting it.
 					 */
 					if (isArray(obj)) {
@@ -95,6 +85,7 @@ export const useThemeStore = defineStore({
 						return src.concat(obj);
 					}
 				});
+				return test;
 			};
 		},
 		getInitialValues() {
@@ -116,12 +107,9 @@ export const useThemeStore = defineStore({
 				const defaultValues = this.getDefaultValues(mode);
 				const fieldsWithDefaults = themeEditorFields.map((field: Partial<RawField>) => {
 					if (field.schema && field.field) {
-						if (isArray(defaultValues[field.field])) {
-							field.schema.default_value = defaultValues[field.field][0] || '';
-						} else {
-							field.schema.default_value = defaultValues[field.field] || '';
-						}
+						field.schema.default_value = defaultValues[field.field] || '';
 					}
+					// Ensure meta.field is populated to avoid errors in v-form
 					if (field.meta && field.field && !field.meta.field) {
 						field.meta.field = field.field;
 					}
@@ -149,14 +137,14 @@ export const useThemeStore = defineStore({
 			this.themeOverrides.light = overrides.light || {};
 		},
 
-		async populateStyles(styleTagID: string, version: ThemeVersions = 'base') {
-			const styleTag: HTMLStyleElement | null = document.querySelector(`style#${styleTagID}`);
+		async populateStyles() {
+			const styleTag: HTMLStyleElement | null = document.querySelector(`style#${SYSTEM_THEME_STYLE_TAG_ID}`);
 			if (!styleTag) {
-				return console.error(`Style tag with ID ${styleTagID} does not exist in document`);
+				return console.error(`Style tag with ID ${SYSTEM_THEME_STYLE_TAG_ID} does not exist in document`);
 			}
 
-			const lightThemeStyle = this.getThemeCSS('light', version) || '';
-			const darkThemeStyle = this.getThemeCSS('dark', version) || '';
+			const lightThemeStyle = this.getThemeCSS('light') || '';
+			const darkThemeStyle = this.getThemeCSS('dark') || '';
 
 			styleTag.textContent = `${lightThemeStyle}\n${darkThemeStyle}`;
 		},
@@ -203,7 +191,7 @@ export const useThemeStore = defineStore({
 				notify({
 					title: i18n.global.t('theme_update_success'),
 				});
-				this.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
+				this.populateStyles();
 			} catch (err: any) {
 				unexpectedError(err);
 			}

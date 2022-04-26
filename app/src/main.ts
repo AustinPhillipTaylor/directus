@@ -16,7 +16,7 @@ import { loadModules } from './modules/register';
 import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
-import { useThemeStore, SYSTEM_THEME_STYLE_TAG_ID, THEME_OVERRIDES_STYLE_TAG_ID } from '@/stores/theme';
+import { useThemeStore } from '@/stores/theme';
 
 init();
 
@@ -51,8 +51,7 @@ async function init() {
 	 */
 	const themeStore = useThemeStore();
 	await themeStore.hydrate();
-	await themeStore.populateStyles(SYSTEM_THEME_STYLE_TAG_ID, 'base');
-	await themeStore.populateStyles(THEME_OVERRIDES_STYLE_TAG_ID, 'overrides');
+	await themeStore.populateStyles();
 
 	registerDirectives(app);
 	registerComponents(app);
