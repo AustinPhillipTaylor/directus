@@ -17,7 +17,7 @@
 			<settings-navigation />
 		</template>
 
-		<theme-selection :current-theme="selectedTheme"></theme-selection>
+		<theme-selection :current-theme="editingTheme"></theme-selection>
 
 		<div class="theme-options">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
@@ -51,7 +51,7 @@ import ThemeSelection from './components/theme-selection.vue';
 import { useServerStore, useThemeStore } from '@/stores';
 import useShortcut from '@/composables/use-shortcut';
 import useEditsGuard from '@/composables/use-edits-guard';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 const { t } = useI18n();
@@ -62,11 +62,11 @@ const route = useRoute();
 const serverStore = useServerStore();
 const themeStore = useThemeStore();
 
-const { selectedTheme } = storeToRefs(themeStore);
+const { editingTheme } = storeToRefs(themeStore);
 
-const initialValues = ref(themeStore.getInitialValues(selectedTheme.value));
+const initialValues = ref(themeStore.getInitialValues(editingTheme.value));
 
-const themeFields = ref(themeStore.getFields(selectedTheme.value));
+const themeFields = ref(themeStore.getFields(editingTheme.value));
 
 const edits = ref<{ [key: string]: any } | null>(null);
 
@@ -80,12 +80,19 @@ useShortcut('meta+s', () => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
+onBeforeRouteLeave(() => {
+	themeStore.setEditingTheme('light');
+	themeStore.setAppTheme();
+});
+
 watch(
 	() => route.params.theme,
 	(newTheme) => {
-		themeStore.setSelectedTheme(newTheme);
-		themeFields.value = themeStore.getFields(selectedTheme.value);
-		initialValues.value = themeStore.getInitialValues(selectedTheme.value);
+		if (!newTheme) return;
+		themeStore.setEditingTheme(newTheme);
+		themeStore.setAppTheme(newTheme);
+		themeFields.value = themeStore.getFields(editingTheme.value);
+		initialValues.value = themeStore.getInitialValues(editingTheme.value);
 		edits.value = null;
 	}
 );
@@ -93,8 +100,8 @@ watch(
 async function save() {
 	if (edits.value === null) return;
 	saving.value = true;
-	await themeStore.updateThemeOverrides({ [selectedTheme.value]: edits.value });
-	initialValues.value = themeStore.getInitialValues(selectedTheme.value);
+	await themeStore.updateThemeOverrides({ [editingTheme.value]: edits.value });
+	initialValues.value = themeStore.getInitialValues(editingTheme.value);
 	await serverStore.hydrate();
 	await themeStore.populateStyles();
 	edits.value = null;

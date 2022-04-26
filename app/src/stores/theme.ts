@@ -5,9 +5,10 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
 import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
-import { RawField, Theme } from '@directus/shared/types';
+import { RawField, Theme, User } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
 import { resolveThemeVariables, resolveFieldValues } from '@/utils/theming';
+import { useUserStore } from '@/stores';
 import { unflatten } from 'flat';
 import { isArray, merge, mergeWith } from 'lodash';
 import { deepDiff } from '@/utils/deep-diff-object';
@@ -28,14 +29,10 @@ export const useThemeStore = defineStore({
 		themeOverrides: {} as ThemeOverrides,
 		/**
 		 * Default to light theme -
-		 * This is entirely separate from the active theme in the app (handled by the users store).
-		 * We use this property to keep track of the theme currently being edited. When the
-		 * Theme Editor module is loaded, this will be updated to initially reflect the user's
-		 * currently selected theme (unless a theme is specified in the URL). We can't populate this
-		 * on load (nor do we really need to), because the theme store is loaded and active on all
-		 * routes, even unauthenticated routes, i.e. the login screen.
+		 * This is entirely separate from the active theme in the app (retrieved from the users store).
+		 * We use this property to keep track of the theme currently being edited in theme editor.
 		 */
-		selectedTheme: 'light',
+		editingTheme: 'light',
 	}),
 	getters: {
 		/**
@@ -196,16 +193,43 @@ export const useThemeStore = defineStore({
 				unexpectedError(err);
 			}
 		},
-		setSelectedTheme(theme: string | string[]) {
+		setEditingTheme(theme: string | string[]) {
 			if (isArray(theme)) {
 				theme = theme[0];
 			}
 			if (availableThemes.includes(theme)) {
-				this.selectedTheme = theme;
+				this.editingTheme = theme;
 			} else {
-				this.selectedTheme = availableThemes[0];
+				this.editingTheme = availableThemes[0];
 			}
 			return true;
+		},
+		setAppTheme(manualTheme?: string | string[]) {
+			if (isArray(manualTheme)) {
+				manualTheme = manualTheme[0];
+			}
+			document.body.classList.remove('dark');
+			document.body.classList.remove('light');
+			document.body.classList.remove('auto');
+
+			// Default to light
+			let theme = 'light';
+
+			if (!manualTheme) {
+				// If a manualTheme wasn't passed, we'll try getting it manually
+				const userStore = useUserStore();
+				const user = userStore.currentUser as User | null;
+				if (user !== null && user.theme) {
+					theme = user.theme;
+				}
+			} else {
+				theme = manualTheme;
+				document
+					.querySelector('head meta[name="theme-color"]')
+					?.setAttribute('content', manualTheme === 'light' ? '#ffffff' : '#263238');
+			}
+			// Default to light mode
+			document.body.classList.add(theme);
 		},
 	},
 });

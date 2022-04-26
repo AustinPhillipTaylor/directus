@@ -65,7 +65,8 @@ export default defineModule({
 					component: ThemeEditor,
 					beforeEnter(to) {
 						const themeStore = useThemeStore();
-						themeStore.setSelectedTheme(to.params.theme || 'light');
+						themeStore.setEditingTheme(to.params.theme || 'light');
+						themeStore.setAppTheme(to.params.theme || 'light');
 					},
 				},
 			],
