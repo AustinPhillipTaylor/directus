@@ -263,6 +263,7 @@ export const useThemeStore = defineStore({
 			}
 			// Default to light mode
 			document.body.classList.add(theme);
+			this.populateFonts(theme);
 		},
 	},
 });
