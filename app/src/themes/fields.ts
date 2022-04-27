@@ -7,48 +7,56 @@ export const fields: Partial<RawField>[] = [
 	/* ---------- Colors ---------- */
 	divider('colors_divider', 'sections.colors.title'),
 	description('colors_description', 'sections.colors.description'),
-	/* ---------- Primary Color Group  ---------- */
-	...themeColorGroup('colors_primary', [
-		colorSource('global.color.primary.normal', 'colors.primary_normal'),
-		generatedColor('global.color.primary.accent', 'colors.primary_accent', 'global.color.background.invert'),
-		generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'global.color.background.page', {
-			desiredContrast: 4.7,
-		}),
-	]),
-	/* ---------- Secondary Color Group  ---------- */
-	...themeColorGroup('colors_secondary', [
-		colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
-		generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'global.color.background.invert'),
-		generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'global.color.background.page', {
-			desiredContrast: 4.7,
-		}),
-	]),
-	/* ---------- Success Color Group  ---------- */
-	...themeColorGroup('colors_success', [
-		colorSource('global.color.success.normal', 'colors.success_normal'),
-		generatedColor('global.color.success.accent', 'colors.success_accent', 'global.color.background.invert'),
-		generatedColor('global.color.success.subtle', 'colors.success_subtle', 'global.color.background.page', {
-			desiredContrast: 4.7,
-		}),
-	]),
-	/* ---------- Warning Color Group  ---------- */
-	...themeColorGroup('colors_warning', [
-		colorSource('global.color.warning.normal', 'colors.warning_normal'),
-		generatedColor('global.color.warning.accent', 'colors.warning_accent', 'global.color.background.invert'),
-		generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'global.color.background.page', {
-			desiredContrast: 4.7,
-			endBuffer: 0.15,
-		}),
-	]),
-	/* ---------- Danger Color Group  ---------- */
-	...themeColorGroup('colors_danger', [
-		colorSource('global.color.danger.normal', 'colors.danger_normal'),
-		generatedColor('global.color.danger.accent', 'colors.danger_accent', 'global.color.background.invert'),
-		generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'global.color.background.page', {
-			desiredContrast: 4.7,
-			endBuffer: 0.45,
-		}),
-	]),
+	// Start main_colors_group
+	...group(
+		'main_colors_group',
+		'group-raw',
+		[
+			/* ---------- Primary Color Group  ---------- */
+			...themeColorGroup('colors_primary', [
+				colorSource('global.color.primary.normal', 'colors.primary_normal'),
+				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'global.color.background.invert'),
+				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'global.color.background.page', {
+					desiredContrast: 4.7,
+				}),
+			]),
+			/* ---------- Secondary Color Group  ---------- */
+			...themeColorGroup('colors_secondary', [
+				colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
+				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'global.color.background.invert'),
+				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'global.color.background.page', {
+					desiredContrast: 4.7,
+				}),
+			]),
+			/* ---------- Success Color Group  ---------- */
+			...themeColorGroup('colors_success', [
+				colorSource('global.color.success.normal', 'colors.success_normal'),
+				generatedColor('global.color.success.accent', 'colors.success_accent', 'global.color.background.invert'),
+				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'global.color.background.page', {
+					desiredContrast: 4.7,
+				}),
+			]),
+			/* ---------- Warning Color Group  ---------- */
+			...themeColorGroup('colors_warning', [
+				colorSource('global.color.warning.normal', 'colors.warning_normal'),
+				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'global.color.background.invert'),
+				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'global.color.background.page', {
+					desiredContrast: 4.7,
+					endBuffer: 0.15,
+				}),
+			]),
+			/* ---------- Danger Color Group  ---------- */
+			...themeColorGroup('colors_danger', [
+				colorSource('global.color.danger.normal', 'colors.danger_normal'),
+				generatedColor('global.color.danger.accent', 'colors.danger_accent', 'global.color.background.invert'),
+				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'global.color.background.page', {
+					desiredContrast: 4.7,
+					endBuffer: 0.45,
+				}),
+			]),
+		],
+		{ class: 'narrow-columns' }
+	), // End main_colors_group
 	/* ---------- Foreground  ---------- */
 	divider('foreground_divider', 'sections.foreground.title'),
 	description('foreground_description', 'sections.foreground.description'),
@@ -77,26 +85,50 @@ export const fields: Partial<RawField>[] = [
 		['JetBrains Mono'],
 		['Noto Sans Mono'],
 	]),
-	color('global.color.foreground.normal', 'colors.foreground_normal'),
-	color('global.color.foreground.accent', 'colors.foreground_accent'),
-	color('global.color.foreground.subtle', 'colors.foreground_subtle'),
-	color('global.color.foreground.invert', 'colors.foreground_invert'),
+	// Start foreground_colors_group
+	...group(
+		'foreground_colors_group',
+		'group-raw',
+		[
+			color('global.color.foreground.normal', 'colors.foreground_normal'),
+			color('global.color.foreground.accent', 'colors.foreground_accent'),
+			color('global.color.foreground.subtle', 'colors.foreground_subtle'),
+			color('global.color.foreground.invert', 'colors.foreground_invert'),
+		],
+		{ class: 'narrow-columns' }
+	), // End foreground_colors_group
 	/* ---------- Background  ---------- */
 	divider('background_divider', 'sections.background.title'),
 	description('background_description', 'sections.background.description'),
-	color('global.color.background.normal', 'colors.background_normal'),
-	color('global.color.background.accent', 'colors.background_accent'),
-	color('global.color.background.subtle', 'colors.background_subtle'),
-	color('global.color.background.page', 'colors.background_page'),
-	color('global.color.background.invert', 'colors.background_invert'),
+	// Start background_colors_group
+	...group(
+		'background_colors_group',
+		'group-raw',
+		[
+			color('global.color.background.normal', 'colors.background_normal'),
+			color('global.color.background.accent', 'colors.background_accent'),
+			color('global.color.background.subtle', 'colors.background_subtle'),
+			color('global.color.background.page', 'colors.background_page'),
+			color('global.color.background.invert', 'colors.background_invert'),
+		],
+		{ class: 'narrow-columns' }
+	), // End background_colors_group
 	/* ---------- Border  ---------- */
 	divider('border_divider', 'sections.border.title'),
 	description('border_description', 'sections.border.description'),
 	integer('global.border.width', 'border.width', 0, 2),
-	integer('global.border.radius', 'border.radius', 0, 16),
-	color('global.color.border.normal', 'colors.border_normal'),
-	color('global.color.border.accent', 'colors.border_accent'),
-	color('global.color.border.subtle', 'colors.border_subtle'),
+	integer('global.border.radius', 'border.radius', 0, 30),
+	// Start border_colors_group
+	...group(
+		'border_colors_group',
+		'group-raw',
+		[
+			color('global.color.border.normal', 'colors.border_normal'),
+			color('global.color.border.accent', 'colors.border_accent'),
+			color('global.color.border.subtle', 'colors.border_subtle'),
+		],
+		{ class: 'narrow-columns' }
+	), // End border_colors_group
 	/* ---------- Text Styles  ---------- */
 	// divider('text_styles_divider', 'sections.text_styles.title'),
 	// description('text_styles_description', 'sections.text_styles.description'),
@@ -104,14 +136,22 @@ export const fields: Partial<RawField>[] = [
 	divider('module_divider', 'sections.module.title'),
 	description('module_description', 'sections.module.description'),
 
-	color('components.module.background.normal', 'colors.module_background_normal'),
-	color('components.module.foreground.normal', 'colors.module_foreground_normal'),
+	// Start module_colors_group
+	...group(
+		'module_colors_group',
+		'group-raw',
+		[
+			color('components.module.background.normal', 'colors.module_background_normal'),
+			color('components.module.foreground.normal', 'colors.module_foreground_normal'),
 
-	color('components.module.background.hover', 'colors.module_background_hover'),
-	color('components.module.foreground.hover', 'colors.module_foreground_hover'),
+			color('components.module.background.hover', 'colors.module_background_hover'),
+			color('components.module.foreground.hover', 'colors.module_foreground_hover'),
 
-	color('components.module.background.active', 'colors.module_background_active'),
-	color('components.module.foreground.active', 'colors.module_foreground_active'),
+			color('components.module.background.active', 'colors.module_background_active'),
+			color('components.module.foreground.active', 'colors.module_foreground_active'),
+		],
+		{ class: 'narrow-columns' }
+	), // End module_colors_group
 ];
 
 function integer(fieldId: string, namePath: string, min: number, max: number) {
@@ -163,6 +203,7 @@ function colorSource(fieldId: string, namePath: string) {
 			options: {
 				source: true,
 			},
+			width: 'full',
 		},
 	};
 	return merge({}, base, overrides);
@@ -173,6 +214,7 @@ function color(fieldId: string, namePath: string) {
 	const overrides = {
 		meta: {
 			interface: 'theme-color-picker',
+			width: 'full',
 		},
 		schema: {
 			default_value: '#cccccc',
@@ -198,6 +240,7 @@ function generatedColor(fieldId: string, namePath: string, mixFieldId: string, o
 					options
 				),
 			},
+			width: 'full',
 			schema: {
 				default_value: '#cccccc',
 			},
@@ -210,18 +253,25 @@ function themeColorGroup(groupId: string, items: RawField[]) {
 	return group(groupId, 'theme-color-group', items);
 }
 
-function group(groupId: string, fieldInterface: string, items: RawField[]): RawField[] {
+function group(
+	groupId: string,
+	fieldInterface: string,
+	items: RawField[],
+	options?: Record<string, string>
+): RawField[] {
 	const base = baseField(groupId);
 	const overrides = {
 		type: 'alias',
 		meta: {
 			interface: fieldInterface,
 			special: ['alias', 'no-data', 'group'],
+			options,
+			width: 'full',
 		},
 	};
 	const groupAlias = merge({}, base, overrides);
 	const groupAppliedFields = items.map((field) => {
-		if (field.meta) field.meta.group = groupId;
+		if (field.meta && !field.meta.group) field.meta.group = groupId;
 		return field;
 	});
 	return [groupAlias, ...groupAppliedFields];
@@ -268,6 +318,7 @@ function baseField(fieldId: string, namePath = '') {
 		meta: {
 			field: fieldId,
 			interface: 'input',
+			width: 'half',
 		},
 		schema: {
 			is_nullable: false,

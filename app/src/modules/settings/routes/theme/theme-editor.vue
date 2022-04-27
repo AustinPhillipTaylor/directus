@@ -122,6 +122,18 @@ function discardAndLeave() {
 .theme-options {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	// .narrow-columns class set in field. Taking advantage of the fact that
+	// v-form v-binds all options passed to field.
+	:deep(.narrow-columns) {
+		& > .grid {
+			display: grid;
+			grid-template-columns: [start] repeat(auto-fill, [start] minmax(165px, 1fr) [full]) [full];
+
+			& > .full {
+				grid-column: auto;
+			}
+		}
+	}
 }
 
 .header-icon {
