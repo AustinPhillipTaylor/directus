@@ -61,9 +61,9 @@ export function resolveFieldValues(object: Record<any, any> = {}) {
 	return values;
 }
 
-export function resolveFontImports(fontNames: string[]) {
-	const importPrefix = "@import url('https://fonts.googleapis.com/css2?";
-	const importSuffix = "&display=swap');";
+export function resolveFontLink(fontNames: string[]) {
+	const linkPrefix = 'https://fonts.googleapis.com/css2?';
+	const linkSuffix = '&display=swap';
 	const famPrefix = 'family=';
 	const axisAndTuple = ':wght@300..800';
 
@@ -72,7 +72,7 @@ export function resolveFontImports(fontNames: string[]) {
 		return famPrefix + name + axisAndTuple;
 	});
 
-	return importPrefix + specList.join('&') + importSuffix;
+	return linkPrefix + specList.join('&') + linkSuffix;
 }
 
 export function extractFontsFromTheme(theme: Partial<Theme['theme']> = {}, exclude: string[] = []) {

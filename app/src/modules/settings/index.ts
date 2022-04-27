@@ -68,7 +68,7 @@ export default defineModule({
 						const theme = (to.params.theme as string) || 'light';
 						themeStore.setEditingTheme(theme);
 						themeStore.setAppTheme(theme);
-						themeStore.populateFontImports(theme);
+						themeStore.populateFonts(theme);
 					},
 				},
 			],

@@ -52,7 +52,7 @@ async function init() {
 	const themeStore = useThemeStore();
 	await themeStore.hydrate();
 	await themeStore.populateStyles();
-	await themeStore.populateFontImports();
+	await themeStore.populateFonts();
 
 	registerDirectives(app);
 	registerComponents(app);

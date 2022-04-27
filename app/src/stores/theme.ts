@@ -6,7 +6,7 @@ import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
 import { RawField, Theme, User } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
-import { resolveThemeVariables, resolveFieldValues, resolveFontImports, extractFontsFromTheme } from '@/utils/theming';
+import { resolveThemeVariables, resolveFieldValues, resolveFontLink, extractFontsFromTheme } from '@/utils/theming';
 import { useUserStore } from '@/stores';
 import { unflatten } from 'flat';
 import { isArray, merge, mergeWith } from 'lodash';
@@ -156,13 +156,12 @@ export const useThemeStore = defineStore({
 			styleTag.textContent = `${lightThemeStyle}\n${darkThemeStyle}`;
 		},
 		/**
-		 * Writes CSS font imports to DOM style tag
+		 * Writes font imports to DOM link tag
 		 */
-		async populateFontImports(manualTheme?: string) {
-			console.log(manualTheme);
-			const fontTag: HTMLStyleElement | null = document.querySelector(`style#${THEME_FONTS_STYLE_TAG_ID}`);
+		async populateFonts(manualTheme?: string) {
+			const fontTag: HTMLStyleElement | null = document.querySelector(`link#${THEME_FONTS_STYLE_TAG_ID}`);
 			if (!fontTag) {
-				return console.error(`Style tag with ID ${THEME_FONTS_STYLE_TAG_ID} does not exist in document`);
+				return console.error(`Link tag with ID ${THEME_FONTS_STYLE_TAG_ID} does not exist in document`);
 			}
 
 			let currentTheme = 'light';
@@ -180,9 +179,9 @@ export const useThemeStore = defineStore({
 			this.externalFonts = extractFontsFromTheme(this.themeOverrides[currentTheme], internalFonts);
 
 			if (this.externalFonts.length > 0) {
-				fontTag.textContent = `${resolveFontImports(this.externalFonts)}`;
+				fontTag.setAttribute('href', `${resolveFontLink(this.externalFonts)}`);
 			} else {
-				fontTag.textContent = '';
+				fontTag.removeAttribute('href');
 			}
 		},
 		/**
