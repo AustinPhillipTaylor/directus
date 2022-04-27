@@ -52,26 +52,27 @@ export const fields: Partial<RawField>[] = [
 	/* ---------- Foreground  ---------- */
 	divider('foreground_divider', 'sections.foreground.title'),
 	description('foreground_description', 'sections.foreground.description'),
-	dropdown('global.font.family.sans', 'font.sans', true, [
+	dropdown('global.font.family.sans', 'font.sans', false, [
 		['Inter'],
 		['Open Sans'],
-		['Fira Sans'],
-		['Noto Sans'],
-		['Roboto'],
+		['Montserrat'],
+		['Noto Sans Display'],
+		['Josefin Sans'],
 		['Merriweather Sans'],
 	]),
-	dropdown('global.font.family.serif', 'font.serif', true, [
+	dropdown('global.font.family.serif', 'font.serif', false, [
 		['Merriweather'],
 		['Playfair Display'],
-		['Noto Serif'],
-		['Source Serif Pro'],
+		['Noto Serif Display'],
+		['Source Serif 4'],
 		['Roboto Serif'],
 		['Roboto Slab'],
 	]),
-	dropdown('global.font.family.mono', 'font.mono', true, [
+	dropdown('global.font.family.mono', 'font.mono', false, [
 		['Fira Mono'],
 		['Fira Code'],
 		['Source Code Pro'],
+		['Red Hat Mono'],
 		['Roboto Mono'],
 		['JetBrains Mono'],
 		['Noto Sans Mono'],

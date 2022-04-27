@@ -61,15 +61,50 @@ export function resolveFieldValues(object: Record<any, any> = {}) {
 	return values;
 }
 
+/**
+ * Using variable font weight ranges, Google fonts will return an error if the
+ * range is outside of the capabilities of the font. So we need to make sure
+ * we're retrieving the appropriate ranges.
+ *
+ * Hardcoding this isn't ideal. However, in order to populate these automatically
+ * we'll need to build out a solution to parse the metadata retrieved from
+ * https://fonts.google.com/metadata/font/Font+Name.
+ *
+ * For the time being, font choices are limited to the variable fonts whose usable
+ * range is listed here. Note that this isn't the full range of some of the fonts,
+ * rather the range that best fits Directus's use of 300-800 font weights.
+ */
+const fontWeightRange: Record<string, string> = {
+	Inter: '300..800',
+	'Open Sans': '300..800',
+	Montserrat: '300..800',
+	'Noto Sans Display': '300..800',
+	'Josefin Sans': '300..700',
+	'Merriweather Sans': '300..800',
+	Merriweather: '300..800',
+	'Playfair Display': '400..800',
+	'Noto Serif Display': '300..800',
+	'Source Serif 4': '300..800',
+	'Roboto Serif': '300..800',
+	'Roboto Slab': '300..800',
+	'Fira Mono': '300..800',
+	'Fira Code': '300..700',
+	'Source Code Pro': '300..800',
+	'Red Hat Mono': '300..700',
+	'Roboto Mono': '300..800',
+	'JetBrains Mono': '300..800',
+	'Noto Sans Mono': '300..800',
+};
+
 export function resolveFontLink(fontNames: string[]) {
 	const linkPrefix = 'https://fonts.googleapis.com/css2?';
 	const linkSuffix = '&display=swap';
 	const famPrefix = 'family=';
-	const axisAndTuple = ':wght@300..800';
+	const axis = ':wght@';
 
 	const specList = fontNames.map((font) => {
 		const name = font.trim().replaceAll(' ', '+');
-		return famPrefix + name + axisAndTuple;
+		return famPrefix + name + axis + (fontWeightRange[font] || '300..800');
 	});
 
 	return linkPrefix + specList.join('&') + linkSuffix;
