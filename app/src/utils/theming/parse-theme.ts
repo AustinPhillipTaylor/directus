@@ -1,6 +1,6 @@
 import { Theme } from '@directus/shared/types';
 import { flatten } from 'flat';
-import { isArray } from 'lodash';
+import { get, isArray } from 'lodash';
 
 // Convert object to keys of flattened object paths, and values of valid CSS strings
 function resolveCSSValues(object: Record<any, any> = {}, prefix = '', suffix = '', join = '-') {
@@ -59,4 +59,39 @@ export function resolveFieldValues(object: Record<any, any> = {}) {
 	}, {});
 
 	return values;
+}
+
+export function resolveFontImports(fontNames: string[]) {
+	const importPrefix = "@import url('https://fonts.googleapis.com/css2?";
+	const importSuffix = "&display=swap');";
+	const famPrefix = 'family=';
+	const axisAndTuple = ':wght@300..800';
+
+	const specList = fontNames.map((font) => {
+		const name = font.trim().replaceAll(' ', '+');
+		return famPrefix + name + axisAndTuple;
+	});
+
+	return importPrefix + specList.join('&') + importSuffix;
+}
+
+export function extractFontsFromTheme(theme: Partial<Theme['theme']> = {}, exclude: string[] = []) {
+	const fontPaths = ['global.font.family.sans', 'global.font.family.serif', 'global.font.family.mono'];
+	const externalFonts = [];
+	for (const path of fontPaths) {
+		const fontSetting = get(theme, path, null);
+
+		if (!fontSetting) continue;
+		if (typeof fontSetting === 'string' && !exclude.includes(fontSetting)) {
+			externalFonts.push(fontSetting);
+		}
+		if (isArray(fontSetting)) {
+			for (const nestedFontSetting of fontSetting) {
+				if (typeof nestedFontSetting === 'string' && !exclude.includes(nestedFontSetting)) {
+					externalFonts.push(nestedFontSetting);
+				}
+			}
+		}
+	}
+	return externalFonts;
 }

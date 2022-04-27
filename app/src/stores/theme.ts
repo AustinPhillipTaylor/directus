@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
@@ -7,7 +6,7 @@ import { notify } from '@/utils/notify';
 import { i18n } from '@/lang';
 import { RawField, Theme, User } from '@directus/shared/types';
 import { baseLight, baseDark, themeEditorFields } from '@/themes';
-import { resolveThemeVariables, resolveFieldValues } from '@/utils/theming';
+import { resolveThemeVariables, resolveFieldValues, resolveFontImports, extractFontsFromTheme } from '@/utils/theming';
 import { useUserStore } from '@/stores';
 import { unflatten } from 'flat';
 import { isArray, merge, mergeWith } from 'lodash';
@@ -18,8 +17,13 @@ type ThemeBase = Record<ThemeVariants, Theme>;
 type ThemeOverrides = Record<ThemeVariants, Theme['theme']>;
 
 export const SYSTEM_THEME_STYLE_TAG_ID = 'system-themes';
+export const THEME_FONTS_STYLE_TAG_ID = 'theme-fonts';
 
 const availableThemes = ['light', 'dark'];
+
+// This assumes that the internal light and dark theme have the same font set.
+// If that ever changes, this will need to be modified.
+const internalFonts = extractFontsFromTheme(baseLight.theme);
 
 export const useThemeStore = defineStore({
 	id: 'themesStore',
@@ -33,6 +37,8 @@ export const useThemeStore = defineStore({
 		 * We use this property to keep track of the theme currently being edited in theme editor.
 		 */
 		editingTheme: 'light',
+		// Keep track of the fonts we need to load from Google Fonts
+		externalFonts: [] as string[],
 	}),
 	getters: {
 		/**
@@ -132,20 +138,53 @@ export const useThemeStore = defineStore({
 
 			this.themeOverrides.dark = overrides.dark || {};
 			this.themeOverrides.light = overrides.light || {};
-		},
 
+			this.externalFonts = extractFontsFromTheme(this.themeOverrides, internalFonts);
+		},
+		/**
+		 * Writes CSS variables to DOM style tag
+		 */
 		async populateStyles() {
 			const styleTag: HTMLStyleElement | null = document.querySelector(`style#${SYSTEM_THEME_STYLE_TAG_ID}`);
 			if (!styleTag) {
 				return console.error(`Style tag with ID ${SYSTEM_THEME_STYLE_TAG_ID} does not exist in document`);
 			}
 
+			// Set CSS variables
 			const lightThemeStyle = this.getThemeCSS('light') || '';
 			const darkThemeStyle = this.getThemeCSS('dark') || '';
-
 			styleTag.textContent = `${lightThemeStyle}\n${darkThemeStyle}`;
 		},
+		/**
+		 * Writes CSS font imports to DOM style tag
+		 */
+		async populateFontImports(manualTheme?: string) {
+			console.log(manualTheme);
+			const fontTag: HTMLStyleElement | null = document.querySelector(`style#${THEME_FONTS_STYLE_TAG_ID}`);
+			if (!fontTag) {
+				return console.error(`Style tag with ID ${THEME_FONTS_STYLE_TAG_ID} does not exist in document`);
+			}
 
+			let currentTheme = 'light';
+
+			if (manualTheme) {
+				currentTheme = manualTheme;
+			} else {
+				const userStore = useUserStore();
+				const user = userStore.currentUser as User | null;
+				if (user !== null && user.theme) {
+					currentTheme = user.theme;
+				}
+			}
+
+			this.externalFonts = extractFontsFromTheme(this.themeOverrides[currentTheme], internalFonts);
+
+			if (this.externalFonts.length > 0) {
+				fontTag.textContent = `${resolveFontImports(this.externalFonts)}`;
+			} else {
+				fontTag.textContent = '';
+			}
+		},
 		/**
 		 * When updates are passed, deep object paths are compared to the same
 		 * paths in the base themes. The updates are narrowed to only the values
@@ -188,15 +227,13 @@ export const useThemeStore = defineStore({
 				notify({
 					title: i18n.global.t('theme_update_success'),
 				});
+
 				this.populateStyles();
 			} catch (err: any) {
 				unexpectedError(err);
 			}
 		},
-		setEditingTheme(theme: string | string[]) {
-			if (isArray(theme)) {
-				theme = theme[0];
-			}
+		setEditingTheme(theme: string) {
 			if (availableThemes.includes(theme)) {
 				this.editingTheme = theme;
 			} else {
@@ -204,10 +241,7 @@ export const useThemeStore = defineStore({
 			}
 			return true;
 		},
-		setAppTheme(manualTheme?: string | string[]) {
-			if (isArray(manualTheme)) {
-				manualTheme = manualTheme[0];
-			}
+		setAppTheme(manualTheme?: string) {
 			document.body.classList.remove('dark');
 			document.body.classList.remove('light');
 			document.body.classList.remove('auto');

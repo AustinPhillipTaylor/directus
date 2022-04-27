@@ -65,8 +65,10 @@ export default defineModule({
 					component: ThemeEditor,
 					beforeEnter(to) {
 						const themeStore = useThemeStore();
-						themeStore.setEditingTheme(to.params.theme || 'light');
-						themeStore.setAppTheme(to.params.theme || 'light');
+						const theme = (to.params.theme as string) || 'light';
+						themeStore.setEditingTheme(theme);
+						themeStore.setAppTheme(theme);
+						themeStore.populateFontImports(theme);
 					},
 				},
 			],

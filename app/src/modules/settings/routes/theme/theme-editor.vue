@@ -86,11 +86,12 @@ onBeforeRouteLeave(() => {
 });
 
 watch(
-	() => route.params.theme,
+	() => route.params.theme as string,
 	(newTheme) => {
 		if (!newTheme) return;
 		themeStore.setEditingTheme(newTheme);
 		themeStore.setAppTheme(newTheme);
+		themeStore.populateFontImports(newTheme);
 		themeFields.value = themeStore.getFields(editingTheme.value);
 		initialValues.value = themeStore.getInitialValues(editingTheme.value);
 		edits.value = null;
@@ -104,6 +105,7 @@ async function save() {
 	initialValues.value = themeStore.getInitialValues(editingTheme.value);
 	await serverStore.hydrate();
 	await themeStore.populateStyles();
+	await themeStore.populateFontImports(editingTheme.value);
 	edits.value = null;
 	saving.value = false;
 }
