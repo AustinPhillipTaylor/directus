@@ -12,25 +12,24 @@
 			nested
 			@update:model-value="updateSource($event)"
 		/>
-		<template v-for="(curField, index) in generatedFields" :key="index">
-			<theme-color-generator
-				:source="generatedFieldValues[curField.field].source"
-				:mix="generatedFieldValues[curField.field].mix"
-				:desired-contrast="curField.meta?.options?.desiredContrast"
-				:base-buffer="curField.meta?.options?.baseBuffer"
-				:end-buffer="curField.meta?.options?.endBuffer"
-				:model-value="generatedFieldValues[curField.field].value"
-				@update:model-value="queueEdits({ [curField.field]: $event })"
-			></theme-color-generator>
+		<template v-for="(curField, index) in generatedColorMeta" :key="index">
+			<div class="theme-generated-color">
+				<div
+					class="theme-generated-color-display"
+					:style="{
+						'background-color': curField.value || '#cccccc',
+					}"
+				></div>
+			</div>
 		</template>
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { Field, ValidationError } from '@directus/shared/types';
-import { computed, nextTick, ref, Ref, watch } from 'vue';
-import themeColorGenerator from '../components/theme-color-generator.vue';
-import { merge } from 'lodash';
+import { computed, ref, Ref, watch } from 'vue';
+import { merge, throttle } from 'lodash';
+import { generateVariant } from '@/utils/theming';
 
 interface Props {
 	values: Record<string, string>;
@@ -60,16 +59,14 @@ const sourceField = props.fields.find((field) => {
 	return field.meta?.options?.source === true;
 });
 
-const sourceValue = ref(
-	(sourceField?.field && props.values[sourceField?.field]) || getThemeSetting(sourceField?.field)
-);
+const sourceValue = ref(sourceField?.field && getThemeSetting(sourceField?.field));
 
 watch(
 	() => props.values,
 	(values) => {
-		const value = sourceField?.field && values[sourceField?.field];
-		if (value) {
-			sourceValue.value = value;
+		const updatedSource = sourceField?.field && values[sourceField?.field];
+		if (updatedSource) {
+			sourceValue.value = updatedSource;
 		}
 	}
 );
@@ -92,14 +89,46 @@ for (const field of editableFields) {
 	});
 }
 
-const generatedFieldValues: Ref<Record<string, any>> = ref({});
+const generatedColorMeta: Ref<Record<string, any>> = ref({});
 
+// Populate initial generated values
 for (const field of generatedFields) {
-	generatedFieldValues.value[field.field] = {
-		value: computed(() => props.values[field.field] || getThemeSetting(field.field)),
+	generatedColorMeta.value[field.field] = {
+		value: computed(() => getThemeSetting(field.field)),
 		source: sourceValue,
 		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
+		desiredContrast: field.meta?.options?.desiredContrast,
+		baseBuffer: field.meta?.options?.baseBuffer,
+		endBuffer: field.meta?.options?.endBuffer,
 	};
+}
+
+/**
+ * Throttle color generation to avoid too many expensive operations while
+ * dragging color picker.
+ */
+const throttledGeneration = throttle(
+	() => {
+		for (const field of generatedFields) {
+			generateColor(field.field);
+		}
+		applyAndReset();
+	},
+	150,
+	{ trailing: true }
+);
+
+function generateColor(fieldName: string) {
+	const colorMeta = generatedColorMeta.value[fieldName];
+	const newColor = generateVariant(
+		colorMeta.source,
+		colorMeta.mix,
+		colorMeta.desiredContrast,
+		colorMeta.endBuffer,
+		colorMeta.baseBuffer
+	);
+
+	queueEdits({ [fieldName]: newColor });
 }
 
 function getThemeSetting(field?: string) {
@@ -114,7 +143,7 @@ function queueEdits(update: { [key: string]: any }) {
 	};
 }
 
-async function updateSource(update: Record<string, any>) {
+function updateSource(update: Record<string, any>) {
 	if (!sourceField?.field) return;
 	if (!update[sourceField.field]) {
 		edits.value = null;
@@ -131,13 +160,13 @@ async function updateSource(update: Record<string, any>) {
 	// Add source field change to queue
 	queueEdits(sourceUpdate);
 
-	/**
-	 * Wait for DOM to update (using `nextTick`) so all generated fields in `v-for` can emit
-	 * their generated values. The `theme-color-generator` invokes `queueEdits()` on
-	 * `modelValue` updates. As a result, once we pass `nextTick`, edits from the source
-	 * and all generators dependent on the source will be queued in `edits.value`.
-	 */
-	await nextTick();
+	// loop through generated fields to queue updates
+	throttledGeneration();
+
+	applyAndReset();
+}
+
+function applyAndReset() {
 	const newValues = merge(props.values, edits.value || {});
 	edits.value = null;
 	emit('apply', newValues);
@@ -154,5 +183,21 @@ async function updateSource(update: Record<string, any>) {
 	display: block;
 	height: 40px;
 	border-radius: var(--g-border-radius);
+}
+.theme-generated-color {
+	border: var(--g-border-width) solid var(--g-color-border-normal);
+	border-radius: var(--g-border-radius);
+	overflow: hidden;
+	width: 40px;
+	height: 40px;
+	display: inline-block;
+	margin: 4px 8px 0 0;
+	.theme-generated-color-display {
+		width: 100%;
+		height: 100%;
+		display: block;
+		border: var(--g-border-width) solid var(--background-input);
+		border-radius: calc(var(--g-border-radius) - 2px);
+	}
 }
 </style>
