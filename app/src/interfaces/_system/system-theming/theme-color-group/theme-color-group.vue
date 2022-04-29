@@ -13,7 +13,7 @@
 			@update:model-value="updateSource($event)"
 		/>
 		<template v-for="(curField, index) in generatedColorMeta" :key="index">
-			<div class="theme-generated-color">
+			<div v-tooltip.bottom="`${sourceName} + ${curField.mixName}`" class="theme-generated-color">
 				<div
 					class="theme-generated-color-display"
 					:style="{
@@ -61,6 +61,8 @@ const sourceField = props.fields.find((field) => {
 
 const sourceValue = ref(sourceField?.field && getThemeSetting(sourceField?.field));
 
+const sourceName = computed(() => sourceField?.name);
+
 watch(
 	() => props.values,
 	(values) => {
@@ -97,9 +99,11 @@ for (const field of generatedFields) {
 		value: computed(() => getThemeSetting(field.field)),
 		source: sourceValue,
 		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
+		mixName: field.meta?.options?.mixName,
 		desiredContrast: field.meta?.options?.desiredContrast,
 		baseBuffer: field.meta?.options?.baseBuffer,
 		endBuffer: field.meta?.options?.endBuffer,
+		relativeToBase: field.meta?.options?.relativeToBase,
 	};
 }
 
@@ -125,7 +129,8 @@ function generateColor(fieldName: string) {
 		colorMeta.mix,
 		colorMeta.desiredContrast,
 		colorMeta.endBuffer,
-		colorMeta.baseBuffer
+		colorMeta.baseBuffer,
+		colorMeta.relativeToBase
 	);
 
 	queueEdits({ [fieldName]: newColor });
@@ -147,7 +152,10 @@ function updateSource(update: Record<string, any>) {
 	if (!sourceField?.field) return;
 	if (!update[sourceField.field]) {
 		edits.value = null;
-		emit('apply', {});
+		for (let field of props.fields) {
+			delete update[field.field];
+		}
+		emit('apply', update);
 		return;
 	}
 
