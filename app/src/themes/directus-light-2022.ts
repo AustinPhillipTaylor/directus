@@ -32,28 +32,28 @@ export const lightTheme: Theme = {
 			color: {
 				primary: {
 					normal: '#6644FF',
-					accent: '#553BC8',
-					subtle: '#F3EAFF',
+					accent: '#5138bc',
+					subtle: '#f4ecff',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#DA84BF',
-					subtle: '#FFEEF9',
+					accent: '#d280b8',
+					subtle: '#ffe9f8',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#2EB090',
-					subtle: '#E4F8EF',
+					accent: '#2ea98b',
+					subtle: '#dbf5ea',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#D8AA49',
-					subtle: '#FFF2DD',
+					accent: '#d1a447',
+					subtle: '#ffedcc',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#BB4859',
-					subtle: '#FFECEC',
+					accent: '#b34556',
+					subtle: '#ffeaeb',
 				},
 				border: {
 					normal: '#D3DAE4',

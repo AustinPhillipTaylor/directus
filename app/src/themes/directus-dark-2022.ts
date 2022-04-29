@@ -32,28 +32,28 @@ export const darkTheme: Theme = {
 			color: {
 				primary: {
 					normal: '#8866ff',
-					accent: '#A583FF',
-					subtle: '#201e3c',
+					accent: '#ab8aff',
+					subtle: '#201c33',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#FFC7EC',
-					subtle: '#261f2c',
+					accent: '#ffd2ef',
+					subtle: '#221e27',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#96E3C8',
-					subtle: '#102526',
+					accent: '#a9e7d2',
+					subtle: '#152123',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#FFE9C4',
-					subtle: '#26241d',
+					accent: '#ffeecd',
+					subtle: '#221e1d',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#ED7783',
-					subtle: '#2f1b24',
+					accent: '#f0818a',
+					subtle: '#281c20',
 				},
 				border: {
 					normal: '#30363D',
