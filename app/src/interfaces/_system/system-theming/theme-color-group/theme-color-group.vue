@@ -15,7 +15,7 @@
 		<template v-for="(curField, index) in generatedColorMeta" :key="index">
 			<div
 				v-tooltip.instant.bottom="
-					`${isCopySupported ? 'Copy ' : ''}[${sourceName}] ${curField.name}: ${curField.value.toUpperCase()}`
+					`${isCopySupported ? t('copy') + ' ' : ''}[${sourceName}] ${curField.name}: ${curField.value.toUpperCase()}`
 				"
 				class="theme-generated-color"
 			>
@@ -45,6 +45,8 @@ import { merge, throttle } from 'lodash';
 import { generateVariant } from '@/utils/theming';
 import useClipboard from '@/composables/use-clipboard';
 import Color from 'color';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 interface Props {
 	values: Record<string, string>;

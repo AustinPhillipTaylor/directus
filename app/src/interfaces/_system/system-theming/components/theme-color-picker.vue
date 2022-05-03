@@ -1,5 +1,5 @@
 <template>
-	<div v-tooltip="fieldData.name" class="theme-color-picker">
+	<div v-tooltip="fieldData?.name" class="theme-color-picker">
 		<input
 			ref="hiddenSourceInput"
 			:value="inputValue"
@@ -19,16 +19,16 @@
 		>
 			<span class="hex-value">{{ inputValue }}</span>
 			<div class="action-buttons">
-				<div v-tooltip.instant="`Edit Color`" class="icon-hit-area" @click="activateColorPicker">
+				<div v-tooltip.instant="t('edit_color_value')" class="icon-hit-area" @click="activateColorPicker">
 					<v-icon name="palette" />
 				</div>
-				<div v-if="defaultValue" v-tooltip.instant="`Set Color to Default`" class="icon-hit-area" @click="setDefault">
+				<div v-if="defaultValue" v-tooltip.instant="t('reset_to_default')" class="icon-hit-area" @click="setDefault">
 					<v-icon name="settings_backup_restore" />
 				</div>
-				<div v-if="isCopySupported" v-tooltip.instant="`Copy Color`" class="icon-hit-area" @click="copyHex">
+				<div v-if="isCopySupported" v-tooltip.instant="t('copy_color_value')" class="icon-hit-area" @click="copyHex">
 					<v-icon name="content_copy" />
 				</div>
-				<div v-if="isPasteSupported" v-tooltip.instant="`Paste Color`" class="icon-hit-area" @click="pasteHex">
+				<div v-if="isPasteSupported" v-tooltip.instant="t('paste_color_value')" class="icon-hit-area" @click="pasteHex">
 					<v-icon name="content_paste" />
 				</div>
 			</div>
@@ -41,10 +41,12 @@ import { Field, ValidationError } from '@directus/shared/types';
 import { computed, ref, Ref } from 'vue';
 import Color from 'color';
 import useClipboard from '@/composables/use-clipboard';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 interface Props {
 	modelValue: string;
-	fieldData: Field;
+	fieldData?: Field;
 	disabled?: boolean;
 	validationErrors?: ValidationError[];
 	defaultValue?: string;
@@ -53,6 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	validationErrors: () => [],
 	defaultValue: '',
+	fieldData: undefined,
 });
 
 const emit = defineEmits(['update:modelValue']);
