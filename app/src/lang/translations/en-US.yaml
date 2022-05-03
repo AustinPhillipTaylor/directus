@@ -904,7 +904,7 @@ page_help_settings_project: "**Project Settings** — Your project's global conf
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
-page_help_settings_theming: "**Theme Editor** — Customize the light and dark theme to suit your project."
+page_help_settings_theming: '**Theme Editor** — Customize the light and dark theme to suit your project.'
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
@@ -1120,6 +1120,8 @@ fields:
     triggers: Triggers
     actions: Actions
     collections: Collections
+accent: &accent Accent
+subtle: &subtle Subtle
 field_options:
   directus_settings:
     project_name_placeholder: My project...
@@ -1154,20 +1156,20 @@ field_options:
     theme_overrides:
       colors:
         primary_normal: Primary
-        primary_accent: Primary Accent
-        primary_subtle: Primary Subtle
+        primary_accent: *accent
+        primary_subtle: *subtle
         secondary_normal: Secondary
-        secondary_accent: Secondary Accent
-        secondary_subtle: Secondary Subtle
+        secondary_accent: *accent
+        secondary_subtle: *subtle
         success_normal: Success
-        success_accent: Success Accent
-        success_subtle: Success Subtle
+        success_accent: *accent
+        success_subtle: *subtle
         warning_normal: Warning
-        warning_accent: Warning Accent
-        warning_subtle: Warning Subtle
+        warning_accent: *accent
+        warning_subtle: *subtle
         danger_normal: Danger
-        danger_accent: Danger Accent
-        danger_subtle: Danger Subtle
+        danger_accent: *accent
+        danger_subtle: *subtle
         border_normal: Border Normal
         border_accent: Border Accent
         border_subtle: Border Subtle
@@ -1199,39 +1201,39 @@ field_options:
         colors:
           title: Color Variables
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
         foreground:
           title: Fonts & Foreground
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
         background:
           title: Background Colors
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
         border:
           title: Border Options
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
         module:
           title: Module Bar
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
         text_styles:
           title: Text Styles
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
   directus_activity:
     login: Login
     create: Create

@@ -13,13 +13,26 @@
 			@update:model-value="updateSource($event)"
 		/>
 		<template v-for="(curField, index) in generatedColorMeta" :key="index">
-			<div v-tooltip.bottom="`${sourceName} + ${curField.mixName}`" class="theme-generated-color">
+			<div
+				v-tooltip.instant.bottom="
+					`${isCopySupported ? 'Copy ' : ''}[${sourceName}] ${curField.name}: ${curField.value.toUpperCase()}`
+				"
+				class="theme-generated-color"
+			>
 				<div
 					class="theme-generated-color-display"
 					:style="{
 						'background-color': curField.value || '#cccccc',
+						//@ts-ignore
+						'--red': inputAsRGB(curField.value).r,
+						'--green': inputAsRGB(curField.value).g,
+						'--blue': inputAsRGB(curField.value).b,
 					}"
-				></div>
+				>
+					<div v-if="isCopySupported" class="copy-color" @click="copyHex(curField.value)">
+						<v-icon name="content_copy" />
+					</div>
+				</div>
 			</div>
 		</template>
 	</div>
@@ -30,6 +43,8 @@ import { Field, ValidationError } from '@directus/shared/types';
 import { computed, ref, Ref, watch } from 'vue';
 import { merge, throttle } from 'lodash';
 import { generateVariant } from '@/utils/theming';
+import useClipboard from '@/composables/use-clipboard';
+import Color from 'color';
 
 interface Props {
 	values: Record<string, string>;
@@ -96,10 +111,10 @@ const generatedColorMeta: Ref<Record<string, any>> = ref({});
 // Populate initial generated values
 for (const field of generatedFields) {
 	generatedColorMeta.value[field.field] = {
+		name: field.name,
 		value: computed(() => getThemeSetting(field.field)),
 		source: sourceValue,
 		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
-		mixName: field.meta?.options?.mixName,
 		desiredContrast: field.meta?.options?.desiredContrast,
 		baseBuffer: field.meta?.options?.baseBuffer,
 		endBuffer: field.meta?.options?.endBuffer,
@@ -121,6 +136,16 @@ const throttledGeneration = throttle(
 	150,
 	{ trailing: true }
 );
+
+const { copyToClipboard, isCopySupported } = useClipboard();
+
+async function copyHex(value: string) {
+	await copyToClipboard(value);
+}
+
+function inputAsRGB(color: string) {
+	return Color(color).rgb().object();
+}
 
 function generateColor(fieldName: string) {
 	const colorMeta = generatedColorMeta.value[fieldName];
@@ -196,16 +221,43 @@ function applyAndReset() {
 	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	overflow: hidden;
-	width: 40px;
-	height: 40px;
+	width: 48px;
+	height: 48px;
 	display: inline-block;
 	margin: 4px 8px 0 0;
 	.theme-generated-color-display {
-		width: 100%;
-		height: 100%;
-		display: block;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+		min-height: 100%;
+		min-width: 100%;
+		display: grid;
 		border: var(--g-border-width) solid var(--background-input);
 		border-radius: calc(var(--g-border-radius) - 2px);
+		align-content: center;
+		justify-content: center;
+		--r: calc(var(--red) * 0.299);
+		--g: calc(var(--green) * 0.587);
+		--b: calc(var(--blue) * 0.114);
+		--sum: calc(var(--r) + var(--g) + var(--b));
+		--perceived-lightness: calc(var(--sum) / 255);
+		--threshold: 0.6;
+		--offset: calc(var(--perceived-lightness) - var(--threshold));
+		--extreme: calc(var(--offset) * -1000000000);
+		--bool: clamp(0, var(--extreme), 1);
+		.copy-color {
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: minmax(0, 1fr);
+			align-items: center;
+			justify-items: center;
+			display: none;
+			color: hsl(0, 0%, calc(100% * var(--bool)));
+			cursor: pointer;
+		}
+	}
+	&:hover {
+		.copy-color {
+			display: grid;
+		}
 	}
 }
 </style>

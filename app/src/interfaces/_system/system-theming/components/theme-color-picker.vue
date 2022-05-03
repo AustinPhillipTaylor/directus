@@ -1,5 +1,5 @@
 <template>
-	<div class="theme-color-picker">
+	<div v-tooltip="fieldData.name" class="theme-color-picker">
 		<input
 			ref="hiddenSourceInput"
 			:value="inputValue"
@@ -19,27 +19,17 @@
 		>
 			<span class="hex-value">{{ inputValue }}</span>
 			<div class="action-buttons">
-				<div v-if="defaultValue" v-tooltip.instant="`Reset to default`" class="icon-hit-area" @click="setDefault">
+				<div v-tooltip.instant="`Edit Color`" class="icon-hit-area" @click="activateColorPicker">
+					<v-icon name="palette" />
+				</div>
+				<div v-if="defaultValue" v-tooltip.instant="`Set Color to Default`" class="icon-hit-area" @click="setDefault">
 					<v-icon name="settings_backup_restore" />
 				</div>
-				<div
-					v-if="isPasteSupported"
-					v-tooltip.instant="`Paste value from clipboard`"
-					class="icon-hit-area"
-					@click="pasteHex"
-				>
-					<v-icon name="content_paste" />
-				</div>
-				<div
-					v-if="isCopySupported"
-					v-tooltip.instant="`Copy value to clipboard`"
-					class="icon-hit-area"
-					@click="copyHex"
-				>
+				<div v-if="isCopySupported" v-tooltip.instant="`Copy Color`" class="icon-hit-area" @click="copyHex">
 					<v-icon name="content_copy" />
 				</div>
-				<div v-tooltip.instant="`Select color`" class="icon-hit-area" @click="activateColorPicker">
-					<v-icon name="palette" />
+				<div v-if="isPasteSupported" v-tooltip.instant="`Paste Color`" class="icon-hit-area" @click="pasteHex">
+					<v-icon name="content_paste" />
 				</div>
 			</div>
 		</div>
@@ -47,13 +37,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ValidationError } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/shared/types';
 import { computed, ref, Ref } from 'vue';
 import Color from 'color';
 import useClipboard from '@/composables/use-clipboard';
 
 interface Props {
 	modelValue: string;
+	fieldData: Field;
 	disabled?: boolean;
 	validationErrors?: ValidationError[];
 	defaultValue?: string;
@@ -105,7 +96,6 @@ function activateColorPicker() {
 	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	overflow: hidden;
-	cursor: pointer;
 	.theme-source-color-input {
 		display: grid;
 		width: 100%;
@@ -144,6 +134,7 @@ function activateColorPicker() {
 				padding: 4px;
 				align-items: center;
 				opacity: 0.5;
+				cursor: pointer;
 				&:hover {
 					opacity: 1;
 				}

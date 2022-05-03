@@ -17,12 +17,10 @@ export const fields: Partial<RawField>[] = [
 				colorSource('global.color.primary.normal', 'colors.primary_normal'),
 				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'global.color.background.invert', {
 					desiredContrast: 1.45,
-					mixName: 'Background Invert',
 				}),
 				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'global.color.background.page', {
 					desiredContrast: 1.15,
 					relativeToBase: false,
-					mixName: 'Background Page',
 				}),
 			]),
 			/* ---------- Secondary Color Group  ---------- */
@@ -30,12 +28,10 @@ export const fields: Partial<RawField>[] = [
 				colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
 				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'global.color.background.invert', {
 					desiredContrast: 1.45,
-					mixName: 'Background Invert',
 				}),
 				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'global.color.background.page', {
 					desiredContrast: 1.15,
 					relativeToBase: false,
-					mixName: 'Background Page',
 				}),
 			]),
 			/* ---------- Success Color Group  ---------- */
@@ -43,12 +39,10 @@ export const fields: Partial<RawField>[] = [
 				colorSource('global.color.success.normal', 'colors.success_normal'),
 				generatedColor('global.color.success.accent', 'colors.success_accent', 'global.color.background.invert', {
 					desiredContrast: 1.45,
-					mixName: 'Background Invert',
 				}),
 				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'global.color.background.page', {
 					desiredContrast: 1.15,
 					relativeToBase: false,
-					mixName: 'Background Page',
 				}),
 			]),
 			/* ---------- Warning Color Group  ---------- */
@@ -56,13 +50,11 @@ export const fields: Partial<RawField>[] = [
 				colorSource('global.color.warning.normal', 'colors.warning_normal'),
 				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'global.color.background.invert', {
 					desiredContrast: 1.45,
-					mixName: 'Background Invert',
 				}),
 				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'global.color.background.page', {
 					desiredContrast: 1.15,
 					endBuffer: 0.1,
 					relativeToBase: false,
-					mixName: 'Background Page',
 				}),
 			]),
 			/* ---------- Danger Color Group  ---------- */
@@ -72,13 +64,11 @@ export const fields: Partial<RawField>[] = [
 					desiredContrast: 1.45,
 					endBuffer: 0.2,
 					baseBuffer: 0.2,
-					mixName: 'Background Invert',
 				}),
 				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'global.color.background.page', {
 					desiredContrast: 1.15,
 					endBuffer: 0.1,
 					relativeToBase: false,
-					mixName: 'Background Page',
 				}),
 			]),
 		],
