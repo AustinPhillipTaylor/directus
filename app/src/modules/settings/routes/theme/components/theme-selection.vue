@@ -83,34 +83,36 @@ function isSVG(path: string) {
 			min-width: 200px;
 			max-width: 240px;
 			overflow: hidden;
-			border-radius: var(--g-border-radius);
-			border: var(--g-border-width) solid var(--g-color-border-normal);
+			border: none;
 			cursor: pointer;
 
 			&.current-theme {
 				border-color: var(--g-color-primary-normal);
-				color: var(--g-color-primary-normal);
-				font-weight: 700;
 				.card-info {
+					color: var(--g-color-primary-normal);
+				}
+				.preview-thumbnail {
 					border-color: var(--g-color-primary-normal);
-					background-color: var(--g-color-primary-subtle);
 				}
 			}
 
 			&:not(.current-theme) {
 				&:hover {
-					border-color: var(--g-color-border-accent);
 					color: var(--g-color-primary-normal);
+					.preview-thumbnail {
+						border-color: var(--g-color-primary-normal);
+					}
 					.card-info {
-						border-color: var(--g-color-border-accent);
+						color: var(--g-color-foreground-accent);
 					}
 				}
 				&:active {
-					border-color: var(--g-color-primary-normal);
 					color: var(--g-color-primary-normal);
+					.preview-thumbnail {
+						border-color: var(--g-color-primary-accent);
+					}
 					.card-info {
-						border-color: var(--g-color-primary-normal);
-						background-color: var(--g-color-primary-subtle);
+						color: var(--g-color-foreground-normal);
 					}
 				}
 			}
@@ -120,13 +122,22 @@ function isSVG(path: string) {
 				height: auto;
 				font-size: 0;
 				line-height: 0;
+				border-radius: var(--g-border-radius);
+				border: var(--g-border-width) solid var(--g-color-foreground-subtle);
+				overflow: hidden;
 			}
 
 			.card-info {
 				display: flex;
-				padding: 12px;
-				border-top: var(--g-border-width) solid var(--g-color-border-normal);
-				background-color: var(--g-color-background-page);
+				align-items: center;
+				width: 100%;
+				height: 20px;
+				margin-top: 2px;
+				overflow: hidden;
+				line-height: 1.3em;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: var(--g-color-foreground-normal);
 			}
 		}
 	}
