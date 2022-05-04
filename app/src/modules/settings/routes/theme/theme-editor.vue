@@ -20,7 +20,7 @@
 		<theme-selection :current-theme="editingTheme"></theme-selection>
 
 		<div class="theme-options">
-			<v-form v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
+			<v-form ref="themeForm" v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
 		</div>
 
 		<template #sidebar>
@@ -54,6 +54,7 @@ import useEditsGuard from '@/composables/use-edits-guard';
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
+import { assign, pick } from 'lodash';
 const { t } = useI18n();
 
 const router = useRouter();
@@ -67,6 +68,8 @@ const { editingTheme } = storeToRefs(themeStore);
 const initialValues = ref(themeStore.getInitialValues(editingTheme.value));
 
 const themeFields = ref(themeStore.getFields(editingTheme.value));
+
+const themeForm = ref<any>(null);
 
 const edits = ref<{ [key: string]: any } | null>(null);
 
@@ -95,6 +98,28 @@ watch(
 		themeFields.value = themeStore.getFields(editingTheme.value);
 		initialValues.value = themeStore.getInitialValues(editingTheme.value);
 		edits.value = null;
+	}
+);
+
+/**
+ * Note: because the theme editor uses nested groups, custom handling of `apply` events is necessary
+ * until https://github.com/directus/directus/issues/13105 is resolved. Upon resolution, this watcher
+ * function can be entirely removed, with no further intervention necessary.
+ */
+const modifyFormApply = watch(
+	() => themeForm.value,
+	(form) => {
+		// Overwriting the apply logic in the form component
+		form.apply = (updates: { [field: string]: any }) => {
+			const updatableKeys = themeFields.value
+				.filter((field) => {
+					if (!field) return false;
+					return field.schema?.is_primary_key || !form.isDisabled(field);
+				})
+				.map((field) => field.field);
+			form.$emit('update:modelValue', pick(assign({}, form.$props.modelValue, updates), updatableKeys as string[]));
+		};
+		modifyFormApply(); // unwatch
 	}
 );
 

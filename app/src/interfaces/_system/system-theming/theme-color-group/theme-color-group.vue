@@ -170,10 +170,11 @@ function updateSource(update: Record<string, any>) {
 	if (!sourceField?.field) return;
 	if (!update[sourceField.field]) {
 		edits.value = null;
+		const values = props.values;
 		for (let field of props.fields) {
-			delete update[field.field];
+			delete values[field.field];
 		}
-		emit('apply', update);
+		emit('apply', values);
 		return;
 	}
 
@@ -193,7 +194,8 @@ function updateSource(update: Record<string, any>) {
 }
 
 function applyAndReset() {
-	const newValues = merge(props.values, edits.value || {});
+	if (!edits.value) return;
+	const newValues = merge({}, props.values, edits.value || {});
 	edits.value = null;
 	emit('apply', newValues);
 }
