@@ -117,9 +117,7 @@ for (const field of generatedFields) {
 		value: computed(() => getThemeSetting(field.field)),
 		source: sourceValue,
 		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
-		desiredContrast: field.meta?.options?.desiredContrast,
-		baseBuffer: field.meta?.options?.baseBuffer,
-		endBuffer: field.meta?.options?.endBuffer,
+		deltaLum: field.meta?.options?.deltaLum,
 		relativeToBase: field.meta?.options?.relativeToBase,
 	};
 }
@@ -151,14 +149,7 @@ function inputAsRGB(color: string) {
 
 function generateColor(fieldName: string) {
 	const colorMeta = generatedColorMeta.value[fieldName];
-	const newColor = generateVariant(
-		colorMeta.source,
-		colorMeta.mix,
-		colorMeta.desiredContrast,
-		colorMeta.endBuffer,
-		colorMeta.baseBuffer,
-		colorMeta.relativeToBase
-	);
+	const newColor = generateVariant(colorMeta.source, colorMeta.mix, colorMeta.deltaLum, colorMeta.relativeToBase);
 
 	queueEdits({ [fieldName]: newColor });
 }

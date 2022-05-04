@@ -16,10 +16,10 @@ export const fields: Partial<RawField>[] = [
 			...themeColorGroup('colors_primary', [
 				colorSource('global.color.primary.normal', 'colors.primary_normal'),
 				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'global.color.background.invert', {
-					desiredContrast: 1.45,
+					deltaLum: 11.4,
 				}),
 				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'global.color.background.page', {
-					desiredContrast: 1.15,
+					deltaLum: 6,
 					relativeToBase: false,
 				}),
 			]),
@@ -27,10 +27,10 @@ export const fields: Partial<RawField>[] = [
 			...themeColorGroup('colors_secondary', [
 				colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
 				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'global.color.background.invert', {
-					desiredContrast: 1.45,
+					deltaLum: 11.4,
 				}),
 				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'global.color.background.page', {
-					desiredContrast: 1.15,
+					deltaLum: 6,
 					relativeToBase: false,
 				}),
 			]),
@@ -38,10 +38,10 @@ export const fields: Partial<RawField>[] = [
 			...themeColorGroup('colors_success', [
 				colorSource('global.color.success.normal', 'colors.success_normal'),
 				generatedColor('global.color.success.accent', 'colors.success_accent', 'global.color.background.invert', {
-					desiredContrast: 1.45,
+					deltaLum: 11.4,
 				}),
 				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'global.color.background.page', {
-					desiredContrast: 1.15,
+					deltaLum: 6,
 					relativeToBase: false,
 				}),
 			]),
@@ -49,11 +49,10 @@ export const fields: Partial<RawField>[] = [
 			...themeColorGroup('colors_warning', [
 				colorSource('global.color.warning.normal', 'colors.warning_normal'),
 				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'global.color.background.invert', {
-					desiredContrast: 1.45,
+					deltaLum: 11.4,
 				}),
 				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'global.color.background.page', {
-					desiredContrast: 1.15,
-					endBuffer: 0.1,
+					deltaLum: 6,
 					relativeToBase: false,
 				}),
 			]),
@@ -61,13 +60,10 @@ export const fields: Partial<RawField>[] = [
 			...themeColorGroup('colors_danger', [
 				colorSource('global.color.danger.normal', 'colors.danger_normal'),
 				generatedColor('global.color.danger.accent', 'colors.danger_accent', 'global.color.background.invert', {
-					desiredContrast: 1.45,
-					endBuffer: 0.2,
-					baseBuffer: 0.2,
+					deltaLum: 11.4,
 				}),
 				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'global.color.background.page', {
-					desiredContrast: 1.15,
-					endBuffer: 0.1,
+					deltaLum: 6,
 					relativeToBase: false,
 				}),
 			]),
