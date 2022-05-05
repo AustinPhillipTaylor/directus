@@ -23,8 +23,10 @@
 					]"
 				>
 					<router-link to="./light">
-						<!-- eslint-disable-next-line vue/no-v-html -->
-						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-light" v-html="ThemePreview" />
+						<div class="preview-thumbnail">
+							<!-- eslint-disable-next-line vue/no-v-html -->
+							<div v-if="isSVG(ThemePreview)" class="theme-light" v-html="ThemePreview" />
+						</div>
 						<div class="card-info">Light Theme</div>
 					</router-link>
 				</div>
@@ -37,8 +39,10 @@
 					]"
 				>
 					<router-link to="./dark">
-						<!-- eslint-disable-next-line vue/no-v-html -->
-						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-dark" v-html="ThemePreview" />
+						<div class="preview-thumbnail">
+							<!-- eslint-disable-next-line vue/no-v-html -->
+							<div v-if="isSVG(ThemePreview)" class="theme-dark" v-html="ThemePreview" />
+						</div>
 						<div class="card-info">Dark Theme</div>
 					</router-link>
 				</div>
