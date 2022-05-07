@@ -1,2 +1,2 @@
 export * from './parse-theme';
-export { findAtRelativeLuminosity as generateVariant } from './generate-variant';
+export * from './generate-variant';

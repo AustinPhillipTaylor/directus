@@ -15,56 +15,41 @@ export const fields: Partial<RawField>[] = [
 			/* ---------- Primary Color Group  ---------- */
 			...themeColorGroup('colors_primary', [
 				colorSource('global.color.primary.normal', 'colors.primary_normal'),
-				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'global.color.background.invert', {
-					deltaLum: 11.4,
-				}),
-				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'global.color.background.page', {
-					deltaLum: 6,
-					relativeToBase: false,
+				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'accent'),
+				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'subtle', {
+					backgroundColor: 'global.color.background.page',
 				}),
 			]),
 			/* ---------- Secondary Color Group  ---------- */
 			...themeColorGroup('colors_secondary', [
 				colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
-				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'global.color.background.invert', {
-					deltaLum: 11.4,
-				}),
-				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'global.color.background.page', {
-					deltaLum: 6,
-					relativeToBase: false,
+				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'accent'),
+				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'subtle', {
+					backgroundColor: 'global.color.background.page',
 				}),
 			]),
 			/* ---------- Success Color Group  ---------- */
 			...themeColorGroup('colors_success', [
 				colorSource('global.color.success.normal', 'colors.success_normal'),
-				generatedColor('global.color.success.accent', 'colors.success_accent', 'global.color.background.invert', {
-					deltaLum: 11.4,
-				}),
-				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'global.color.background.page', {
-					deltaLum: 6,
-					relativeToBase: false,
+				generatedColor('global.color.success.accent', 'colors.success_accent', 'accent'),
+				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'subtle', {
+					backgroundColor: 'global.color.background.page',
 				}),
 			]),
 			/* ---------- Warning Color Group  ---------- */
 			...themeColorGroup('colors_warning', [
 				colorSource('global.color.warning.normal', 'colors.warning_normal'),
-				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'global.color.background.invert', {
-					deltaLum: 11.4,
-				}),
-				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'global.color.background.page', {
-					deltaLum: 6,
-					relativeToBase: false,
+				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'accent'),
+				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'subtle', {
+					backgroundColor: 'global.color.background.page',
 				}),
 			]),
 			/* ---------- Danger Color Group  ---------- */
 			...themeColorGroup('colors_danger', [
 				colorSource('global.color.danger.normal', 'colors.danger_normal'),
-				generatedColor('global.color.danger.accent', 'colors.danger_accent', 'global.color.background.invert', {
-					deltaLum: 11.4,
-				}),
-				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'global.color.background.page', {
-					deltaLum: 6,
-					relativeToBase: false,
+				generatedColor('global.color.danger.accent', 'colors.danger_accent', 'accent'),
+				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'subtle', {
+					backgroundColor: 'global.color.background.page',
 				}),
 			]),
 		],
@@ -236,14 +221,13 @@ function color(fieldId: string, namePath: string) {
 	return merge({}, base, overrides);
 }
 
-function generatedColor(fieldId: string, namePath: string, mixFieldId: string, options = {}) {
+function generatedColor(fieldId: string, namePath: string, generateType: 'accent' | 'subtle', options = {}) {
 	const base = baseField(fieldId, namePath);
 	const overrides = {
 		meta: {
 			interface: null,
 			options: {
-				mix: mixFieldId,
-				generated: true,
+				generateType,
 				...options,
 			},
 			width: 'full',

@@ -42,7 +42,8 @@
 import { Field, ValidationError } from '@directus/shared/types';
 import { computed, ref, Ref, watch } from 'vue';
 import { merge, throttle } from 'lodash';
-import { generateVariant } from '@/utils/theming';
+import { generateAccent, generateSubtle } from '@/utils/theming';
+import { useThemeStore } from '@/stores';
 import useClipboard from '@/composables/use-clipboard';
 import Color from 'color';
 import { useI18n } from 'vue-i18n';
@@ -70,6 +71,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['apply']);
 
+const themeStore = useThemeStore();
+
 const edits = ref<{ [key: string]: any } | null>(null);
 
 const sourceField = props.fields.find((field) => {
@@ -91,13 +94,13 @@ watch(
 );
 
 const editableFields = props.fields.filter((field) => {
-	return !(field.meta?.options?.generated === true);
+	return !field.meta?.options?.generateType;
 });
 
 const generatedFields = props.fields.filter((field) => {
 	// We need a source to generate from
 	if (!sourceField) return false;
-	return field.meta?.options?.generated === true;
+	return !!field.meta?.options?.generateType;
 });
 
 const editableFieldValues: Ref<Record<string, any>> = ref({});
@@ -116,9 +119,8 @@ for (const field of generatedFields) {
 		name: field.name,
 		value: computed(() => getThemeSetting(field.field)),
 		source: sourceValue,
-		mix: computed(() => getThemeSetting(field.meta?.options?.mix)),
-		deltaLum: field.meta?.options?.deltaLum,
-		relativeToBase: field.meta?.options?.relativeToBase,
+		type: field.meta?.options?.generateType || '',
+		mix: computed(() => getThemeSetting(field.meta?.options?.backgroundColor)) || '#ffffff',
 	};
 }
 
@@ -149,7 +151,13 @@ function inputAsRGB(color: string) {
 
 function generateColor(fieldName: string) {
 	const colorMeta = generatedColorMeta.value[fieldName];
-	const newColor = generateVariant(colorMeta.source, colorMeta.mix, colorMeta.deltaLum, colorMeta.relativeToBase);
+	let newColor = '#cccccc';
+	if (colorMeta.type === 'accent') {
+		newColor = generateAccent(colorMeta.source, themeStore.editingTheme === 'dark' ? false : true);
+	} else {
+		// subtle
+		newColor = generateSubtle(colorMeta.source, colorMeta.mix, 0.1, themeStore.editingTheme === 'dark' ? 5 : -5);
+	}
 
 	queueEdits({ [fieldName]: newColor });
 }
