@@ -35,16 +35,3 @@ const props = withDefaults(defineProps<Props>(), {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const emit = defineEmits(['input']);
 </script>
-
-<style lang="scss" scoped>
-.hidden-input {
-	width: 0;
-	height: 0;
-	visibility: hidden;
-}
-.theme-source-color-input {
-	display: block;
-	height: 40px;
-	border-radius: var(--g-border-radius);
-}
-</style>

@@ -75,7 +75,7 @@ export const useThemeStore = defineStore({
 				 * Base themes store entire theme/metadata (title, desc., etc.). When
 				 * targeting `themeBase` we have to get the `theme` sub-property
 				 */
-				const test = mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
+				const mergedTheme = mergeWith({}, state.themeBase[mode].theme, state.themeOverrides[mode], (obj, src) => {
 					/**
 					 * If we run into an array, we'll add the incoming value to the
 					 * beginning of the existing array, instead of overwriting it.
@@ -88,38 +88,63 @@ export const useThemeStore = defineStore({
 						return src.concat(obj);
 					}
 				});
-				return test;
+				return mergedTheme;
 			};
 		},
-		getInitialValues() {
-			return (mode: ThemeVariants = 'light') => {
-				return resolveFieldValues(this.getMergedTheme(mode)) || {};
-			};
+		getCurrentMergedTheme(): Record<string, any> {
+			/**
+			 * NOTE: This getter works exactly the same as `getMergedTheme`, except you can't
+			 * pass a theme mode, it automatically gets the theme currently being edited.
+			 *
+			 * Why do this? This is necessary because getters can only receive parameters by
+			 * returning a function, however, this breaks the caching functionality of
+			 * Pinia's getters (getters normally return computed properties, which are
+			 * automatically cached by vue).
+			 *
+			 * `getCurrentMergedTheme` is called very frequently in the usage of
+			 * `getInitialValues`. As a result, we would take a performance hit if we instead
+			 * used `getMergedTheme`, ignoring any cache.
+			 */
+			const mergedTheme = mergeWith(
+				{},
+				this.themeBase[this.editingTheme].theme,
+				this.themeOverrides[this.editingTheme],
+				(obj, src) => {
+					if (isArray(obj)) {
+						if (typeof src === 'string') {
+							obj.unshift(src);
+							return obj;
+						}
+						return src.concat(obj);
+					}
+				}
+			);
+			return mergedTheme;
 		},
-		getDefaultValues() {
-			return (mode: ThemeVariants = 'light') => {
-				return resolveFieldValues(this.themeBase[mode].theme) || {};
-			};
+		getInitialValues(): Record<string, any> {
+			return resolveFieldValues(this.getCurrentMergedTheme || {});
+		},
+		getDefaultValues(): Record<string, any> {
+			return resolveFieldValues(this.themeBase[this.editingTheme].theme) || {};
 		},
 		getFields() {
-			return (mode: ThemeVariants = 'light') => {
-				/**
-				 * Defaults are dependent on theme mode/base theme. As a result, we can't populate them
-				 * on field generation. We'll populate defaults here, now that we know the mode.
-				 */
-				const defaultValues = this.getDefaultValues(mode);
-				const fieldsWithDefaults = themeEditorFields.map((field: Partial<RawField>) => {
-					if (field.schema && field.field) {
-						field.schema.default_value = defaultValues[field.field] || '';
-					}
-					// Ensure meta.field is populated to avoid errors in v-form
-					if (field.meta && field.field && !field.meta.field) {
-						field.meta.field = field.field;
-					}
-					return field;
-				});
-				return fieldsWithDefaults;
-			};
+			/**
+			 * Defaults are dependent on theme mode/base theme. As a result, we can't populate them
+			 * on field generation. We'll populate defaults here, now that we know the mode.
+			 */
+			const defaultValues = this.getDefaultValues;
+			const fieldsWithDefaults = themeEditorFields.map((field: Partial<RawField>) => {
+				if (field.schema && field.field) {
+					field.schema.default_value = defaultValues[field.field] || '';
+				}
+				// Ensure meta.field is populated to avoid errors in v-form
+				if (field.meta && field.field && !field.meta.field) {
+					field.meta.field = field.field;
+				}
+
+				return field;
+			});
+			return fieldsWithDefaults;
 		},
 	},
 	actions: {

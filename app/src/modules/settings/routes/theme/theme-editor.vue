@@ -46,6 +46,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
+import { generateAccent, generateSubtle } from '@/utils/theming';
 import SettingsNavigation from '../../components/navigation.vue';
 import ThemeSelection from './components/theme-selection.vue';
 import { useServerStore, useThemeStore } from '@/stores';
@@ -54,7 +55,7 @@ import useEditsGuard from '@/composables/use-edits-guard';
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
-import { assign, pick } from 'lodash';
+import { Field } from '@directus/shared/types';
 const { t } = useI18n();
 
 const router = useRouter();
@@ -65,13 +66,89 @@ const themeStore = useThemeStore();
 
 const { editingTheme } = storeToRefs(themeStore);
 
-const initialValues = ref(themeStore.getInitialValues(editingTheme.value));
+const initialValues = ref(themeStore.getInitialValues);
 
-const themeFields = ref(themeStore.getFields(editingTheme.value));
+const themeFields = ref(themeStore.getFields);
 
 const themeForm = ref<any>(null);
 
-const edits = ref<{ [key: string]: any } | null>(null);
+const generatedFields = computed<Field[] | null>(() => {
+	return (
+		themeFields.value.filter((field) => {
+			return field.meta?.options?.generated === true;
+		}) || null
+	);
+});
+
+const generatedFieldDependencies = computed<Record<string, string[]>>(() => {
+	if (!generatedFields.value) return {};
+	let dependencies: Record<string, any> = {};
+	for (const field of generatedFields.value) {
+		const options = field.meta?.options;
+		if (!options || options === {}) continue;
+		if (!dependencies[field.field]) {
+			dependencies[field.field] = [];
+		}
+		if (options.source) {
+			dependencies[field.field].push(options.source);
+		}
+		if (options.backgroundSource) {
+			dependencies[field.field].push(options.backgroundSource);
+		}
+	}
+	return dependencies;
+});
+
+const pendingEdits = ref<Record<string, any> | null>(null);
+
+const edits = computed<Record<string, any> | null>({
+	get() {
+		return pendingEdits.value;
+	},
+	set(edits) {
+		const toRegenerate = [];
+		for (const field of Object.keys(generatedFieldDependencies.value)) {
+			const dependencies = generatedFieldDependencies.value[field];
+			for (const dep of dependencies) {
+				if (
+					(edits?.[dep] && (!pendingEdits.value || edits?.[dep] !== pendingEdits.value[dep])) ||
+					(!edits?.[dep] && pendingEdits?.value?.[dep])
+				) {
+					toRegenerate.push(field);
+				}
+			}
+		}
+
+		if ((!pendingEdits.value || pendingEdits.value === {}) && toRegenerate.length > 0) {
+			pendingEdits.value = {};
+		}
+
+		if (!edits) {
+			edits = {};
+		}
+
+		for (const field of toRegenerate) {
+			const fieldData = themeFields.value.find((tField) => {
+				return tField.field === field;
+			});
+
+			if (!fieldData) continue;
+
+			const type = fieldData.meta?.options?.generateType;
+			const sourcePath = fieldData.meta?.options?.source || '';
+			const backgroundPath = fieldData.meta?.options?.backgroundSource || '';
+
+			if (!sourcePath) continue;
+
+			const sourceValue = edits?.[sourcePath] || initialValues.value[sourcePath];
+			const backgroundValue = edits?.[backgroundPath] || initialValues.value[backgroundPath];
+
+			edits[field] = generateColor(type, sourceValue, backgroundValue || null);
+		}
+
+		pendingEdits.value = edits as Record<string, any>;
+	},
+});
 
 const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
@@ -86,6 +163,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 onBeforeRouteLeave(() => {
 	themeStore.setEditingTheme('light');
 	themeStore.setAppTheme();
+	edits.value = {};
 });
 
 watch(
@@ -95,49 +173,41 @@ watch(
 		themeStore.setEditingTheme(newTheme);
 		themeStore.setAppTheme(newTheme);
 		themeStore.populateFonts(newTheme);
-		themeFields.value = themeStore.getFields(editingTheme.value);
-		initialValues.value = themeStore.getInitialValues(editingTheme.value);
-		edits.value = null;
+		themeFields.value = themeStore.getFields;
+		initialValues.value = themeStore.getInitialValues;
+		edits.value = {};
 	}
 );
 
-/**
- * Note: because the theme editor uses nested groups, custom handling of `apply` events is necessary
- * until https://github.com/directus/directus/issues/13105 is resolved. Upon resolution, this watcher
- * function can be entirely removed, with no further intervention necessary.
- */
-const modifyFormApply = watch(
-	() => themeForm.value,
-	(form) => {
-		// Overwriting the apply logic in the form component
-		form.apply = (updates: { [field: string]: any }) => {
-			const updatableKeys = themeFields.value
-				.filter((field) => {
-					if (!field) return false;
-					return field.schema?.is_primary_key || !form.isDisabled(field);
-				})
-				.map((field) => field.field);
-			form.$emit('update:modelValue', pick(assign({}, form.$props.modelValue, updates), updatableKeys as string[]));
-		};
-		modifyFormApply(); // unwatch
+function generateColor(type: string, source: string, background?: string) {
+	let newColor = '#cccccc';
+	if (type === 'accent') {
+		newColor = generateAccent(source, editingTheme.value === 'dark' ? false : true);
+	} else {
+		// subtle
+		if (!background) {
+			return source;
+		}
+		newColor = generateSubtle(source, background, 0.1, editingTheme.value === 'dark' ? 5 : -5);
 	}
-);
+	return newColor;
+}
 
 async function save() {
-	if (edits.value === null) return;
+	if (edits.value === {}) return;
 	saving.value = true;
 	await themeStore.updateThemeOverrides({ [editingTheme.value]: edits.value });
-	initialValues.value = themeStore.getInitialValues(editingTheme.value);
+	initialValues.value = themeStore.getInitialValues;
 	await serverStore.hydrate();
 	await themeStore.populateStyles();
 	await themeStore.populateFonts(editingTheme.value);
-	edits.value = null;
+	edits.value = {};
 	saving.value = false;
 }
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	edits.value = null;
+	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
@@ -156,6 +226,20 @@ function discardAndLeave() {
 
 			& > .full {
 				grid-column: auto;
+			}
+		}
+		.group-raw {
+			&.theme-color-group {
+				& > .grid {
+					display: flex;
+					flex-wrap: wrap;
+					grid-gap: 4px;
+					& > .full {
+						&.first-visible-field {
+							width: 100%;
+						}
+					}
+				}
 			}
 		}
 	}

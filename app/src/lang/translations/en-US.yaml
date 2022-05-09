@@ -1733,7 +1733,7 @@ interfaces:
     start_open: Start Open
     start_closed: Start Closed
   system-theme:
-    color_group: Theme Color Picker Group
+    color_generated: Generated Theme Color
     color_picker: Theme Color Picker
 displays:
   translations:

@@ -13,45 +13,114 @@ export const fields: Partial<RawField>[] = [
 		'group-raw',
 		[
 			/* ---------- Primary Color Group  ---------- */
-			...themeColorGroup('colors_primary', [
-				colorSource('global.color.primary.normal', 'colors.primary_normal'),
-				generatedColor('global.color.primary.accent', 'colors.primary_accent', 'accent'),
-				generatedColor('global.color.primary.subtle', 'colors.primary_subtle', 'subtle', {
-					backgroundColor: 'global.color.background.page',
-				}),
-			]),
+			...group(
+				'colors_primary',
+				'group-raw',
+				[
+					colorSource('global.color.primary.normal', 'colors.primary_normal'),
+					generatedColor(
+						'global.color.primary.accent',
+						'colors.primary_accent',
+						'accent',
+						'global.color.primary.normal'
+					),
+					generatedColor(
+						'global.color.primary.subtle',
+						'colors.primary_subtle',
+						'subtle',
+						'global.color.primary.normal',
+						{
+							backgroundSource: 'global.color.background.page',
+						}
+					),
+				],
+				{ class: 'theme-color-group' }
+			),
 			/* ---------- Secondary Color Group  ---------- */
-			...themeColorGroup('colors_secondary', [
-				colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
-				generatedColor('global.color.secondary.accent', 'colors.secondary_accent', 'accent'),
-				generatedColor('global.color.secondary.subtle', 'colors.secondary_subtle', 'subtle', {
-					backgroundColor: 'global.color.background.page',
-				}),
-			]),
+			...group(
+				'colors_secondary',
+				'group-raw',
+				[
+					colorSource('global.color.secondary.normal', 'colors.secondary_normal'),
+					generatedColor(
+						'global.color.secondary.accent',
+						'colors.secondary_accent',
+						'accent',
+						'global.color.secondary.normal'
+					),
+					generatedColor(
+						'global.color.secondary.subtle',
+						'colors.secondary_subtle',
+						'subtle',
+						'global.color.secondary.normal',
+						{
+							backgroundSource: 'global.color.background.page',
+						}
+					),
+				],
+				{ class: 'theme-color-group' }
+			),
 			/* ---------- Success Color Group  ---------- */
-			...themeColorGroup('colors_success', [
-				colorSource('global.color.success.normal', 'colors.success_normal'),
-				generatedColor('global.color.success.accent', 'colors.success_accent', 'accent'),
-				generatedColor('global.color.success.subtle', 'colors.success_subtle', 'subtle', {
-					backgroundColor: 'global.color.background.page',
-				}),
-			]),
+			...group(
+				'colors_success',
+				'group-raw',
+				[
+					colorSource('global.color.success.normal', 'colors.success_normal'),
+					generatedColor(
+						'global.color.success.accent',
+						'colors.success_accent',
+						'accent',
+						'global.color.success.normal'
+					),
+					generatedColor(
+						'global.color.success.subtle',
+						'colors.success_subtle',
+						'subtle',
+						'global.color.success.normal',
+						{
+							backgroundSource: 'global.color.background.page',
+						}
+					),
+				],
+				{ class: 'theme-color-group' }
+			),
 			/* ---------- Warning Color Group  ---------- */
-			...themeColorGroup('colors_warning', [
-				colorSource('global.color.warning.normal', 'colors.warning_normal'),
-				generatedColor('global.color.warning.accent', 'colors.warning_accent', 'accent'),
-				generatedColor('global.color.warning.subtle', 'colors.warning_subtle', 'subtle', {
-					backgroundColor: 'global.color.background.page',
-				}),
-			]),
+			...group(
+				'colors_warning',
+				'group-raw',
+				[
+					colorSource('global.color.warning.normal', 'colors.warning_normal'),
+					generatedColor(
+						'global.color.warning.accent',
+						'colors.warning_accent',
+						'accent',
+						'global.color.warning.normal'
+					),
+					generatedColor(
+						'global.color.warning.subtle',
+						'colors.warning_subtle',
+						'subtle',
+						'global.color.warning.normal',
+						{
+							backgroundSource: 'global.color.background.page',
+						}
+					),
+				],
+				{ class: 'theme-color-group' }
+			),
 			/* ---------- Danger Color Group  ---------- */
-			...themeColorGroup('colors_danger', [
-				colorSource('global.color.danger.normal', 'colors.danger_normal'),
-				generatedColor('global.color.danger.accent', 'colors.danger_accent', 'accent'),
-				generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'subtle', {
-					backgroundColor: 'global.color.background.page',
-				}),
-			]),
+			...group(
+				'colors_danger',
+				'group-raw',
+				[
+					colorSource('global.color.danger.normal', 'colors.danger_normal'),
+					generatedColor('global.color.danger.accent', 'colors.danger_accent', 'accent', 'global.color.danger.normal'),
+					generatedColor('global.color.danger.subtle', 'colors.danger_subtle', 'subtle', 'global.color.danger.normal', {
+						backgroundSource: 'global.color.background.page',
+					}),
+				],
+				{ class: 'theme-color-group' }
+			),
 		],
 		{ class: 'narrow-columns' }
 	), // End main_colors_group
@@ -221,13 +290,22 @@ function color(fieldId: string, namePath: string) {
 	return merge({}, base, overrides);
 }
 
-function generatedColor(fieldId: string, namePath: string, generateType: 'accent' | 'subtle', options = {}) {
+function generatedColor(
+	fieldId: string,
+	namePath: string,
+	generateType: 'accent' | 'subtle',
+	source: string,
+	options = {}
+) {
 	const base = baseField(fieldId, namePath);
 	const overrides = {
+		hideLabel: true,
 		meta: {
-			interface: null,
+			interface: 'theme-generated-color',
 			options: {
+				generated: true,
 				generateType,
+				source,
 				...options,
 			},
 			width: 'full',
@@ -237,10 +315,6 @@ function generatedColor(fieldId: string, namePath: string, generateType: 'accent
 		},
 	};
 	return merge({}, base, overrides);
-}
-
-function themeColorGroup(groupId: string, items: RawField[]) {
-	return group(groupId, 'theme-color-group', items);
 }
 
 function group(
