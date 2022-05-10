@@ -1,7 +1,7 @@
 <template>
 	<div
-		v-tooltip.instant.bottom="
-			`${isCopySupported ? t('copy') + ' ' : ''}[${sourceName}] ${fieldData.name}: ${modelValue.toUpperCase()}`
+		v-tooltip.bottom="
+			`${isCopySupported ? t('copy') + ' ' : ''}${sourceName} ${fieldData.name}: ${modelValue.toUpperCase()}`
 		"
 		class="theme-generated-color"
 	>
@@ -60,6 +60,8 @@ function inputAsRGB(color: string) {
 	height: 48px;
 	display: block;
 	margin: 0;
+	transition: border-color var(--fast) var(--transition);
+	cursor: pointer;
 	.theme-generated-color-display {
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr);
@@ -84,14 +86,21 @@ function inputAsRGB(color: string) {
 			grid-template-rows: minmax(0, 1fr);
 			align-items: center;
 			justify-items: center;
-			display: none;
+			display: grid;
 			color: hsl(0, 0%, calc(100% * var(--bool)));
-			cursor: pointer;
+			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
 		}
 	}
 	&:hover {
-		.copy-color {
-			display: grid;
+		border-color: var(--g-color-border-accent);
+		transition: border-color var(--fast) var(--transition);
+		.theme-generated-color-display {
+			.copy-color {
+				display: grid;
+				opacity: 1;
+				transition: opacity var(--fast) var(--transition);
+			}
 		}
 	}
 }

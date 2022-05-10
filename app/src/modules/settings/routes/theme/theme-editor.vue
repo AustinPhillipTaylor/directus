@@ -253,6 +253,23 @@ function discardAndLeave() {
 	}
 }
 
+.theme-options,
+.theme-selection {
+	:deep(.theme-editor-divider) {
+		margin-bottom: calc(var(--form-vertical-gap) * -0.618);
+		&.large .type-text {
+			font-weight: 600;
+			font-size: 20px;
+		}
+	}
+}
+
+.theme-selection {
+	:deep(.theme-editor-divider) {
+		margin-bottom: 0;
+	}
+}
+
 .header-icon {
 	--v-button-color-disabled: var(--g-color-primary-normal);
 	--v-button-background-color-disabled: var(--g-color-primary-subtle);

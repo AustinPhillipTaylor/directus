@@ -1,5 +1,5 @@
 <template>
-	<div v-tooltip="fieldData?.name" class="theme-color-picker">
+	<div class="theme-color-picker" @click="activateColorPicker">
 		<input
 			ref="hiddenSourceInput"
 			:value="inputValue"
@@ -18,20 +18,6 @@
 			}"
 		>
 			<span class="hex-value">{{ inputValue }}</span>
-			<div class="action-buttons">
-				<div v-tooltip.instant="t('edit_color_value')" class="icon-hit-area" @click="activateColorPicker">
-					<v-icon name="palette" />
-				</div>
-				<div v-if="defaultValue" v-tooltip.instant="t('reset_to_default')" class="icon-hit-area" @click="setDefault">
-					<v-icon name="settings_backup_restore" />
-				</div>
-				<div v-if="isCopySupported" v-tooltip.instant="t('copy_color_value')" class="icon-hit-area" @click="copyHex">
-					<v-icon name="content_copy" />
-				</div>
-				<div v-if="isPasteSupported" v-tooltip.instant="t('paste_color_value')" class="icon-hit-area" @click="pasteHex">
-					<v-icon name="content_paste" />
-				</div>
-			</div>
 		</div>
 	</div>
 </template>
@@ -40,9 +26,6 @@
 import { Field, ValidationError } from '@directus/shared/types';
 import { computed, ref, Ref } from 'vue';
 import Color from 'color';
-import useClipboard from '@/composables/use-clipboard';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 interface Props {
 	modelValue: string;
@@ -68,22 +51,6 @@ const inputValue = computed(() => {
 
 const inputAsRGB = computed(() => Color(inputValue.value).rgb().object());
 
-const { copyToClipboard, pasteFromClipboard, isCopySupported, isPasteSupported } = useClipboard();
-
-async function copyHex() {
-	await copyToClipboard(inputValue.value);
-}
-
-async function pasteHex() {
-	const pastedValue = await pasteFromClipboard();
-	if (!pastedValue) return;
-	emitUpdated(pastedValue);
-}
-
-function setDefault() {
-	emitUpdated(props.defaultValue as string);
-}
-
 function emitUpdated(event: string) {
 	emit('update:modelValue', event);
 }
@@ -99,6 +66,8 @@ function activateColorPicker() {
 	border: var(--g-border-width) solid var(--g-color-border-normal);
 	border-radius: var(--g-border-radius);
 	overflow: hidden;
+	cursor: pointer;
+	transition: border-color var(--fast) var(--transition);
 	.theme-source-color-input {
 		display: grid;
 		width: 100%;
@@ -120,38 +89,10 @@ function activateColorPicker() {
 			margin-left: -1px;
 			color: hsl(0, 0%, calc(100% * var(--bool)));
 		}
-		.action-buttons {
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			display: none;
-			grid-auto-flow: column;
-			color: hsl(0, 0%, calc(100% * var(--bool)));
-			justify-content: center;
-			align-items: center;
-			.icon-hit-area {
-				display: grid;
-				height: 100%;
-				padding: 4px;
-				align-items: center;
-				opacity: 0.5;
-				cursor: pointer;
-				&:hover {
-					opacity: 1;
-				}
-			}
-		}
-		&:hover {
-			.action-buttons {
-				display: grid;
-				background: transparent;
-			}
-			.hex-value {
-				display: none;
-			}
-		}
+	}
+	&:hover {
+		border-color: var(--g-color-border-accent);
+		transition: border-color var(--fast) var(--transition);
 	}
 }
 .hidden-input {

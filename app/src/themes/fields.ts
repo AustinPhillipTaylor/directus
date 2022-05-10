@@ -349,7 +349,8 @@ function divider(fieldId: string, titlePath: string): RawField {
 			interface: 'presentation-divider',
 			options: {
 				title: titlePath ? _t(titlePath) : '',
-				inlineTitle: true,
+				inlineTitle: false,
+				class: 'theme-editor-divider',
 			},
 			special: ['alias', 'no-data'],
 			width: 'full',

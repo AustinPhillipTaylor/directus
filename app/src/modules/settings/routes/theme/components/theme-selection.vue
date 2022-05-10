@@ -2,12 +2,12 @@
 	<div class="theme-selection">
 		<div class="grid with-fill">
 			<v-divider
-				class="divider full"
+				class="full theme-editor-divider"
 				:style="{
 					'--v-divider-color': 'var(--g-color-border-subtle)',
 				}"
 				large
-				:inline-title="true"
+				:inline-title="false"
 			>
 				<template #default>
 					{{ t('field_options.directus_settings.theme_overrides.sections.select_theme.title') }}
@@ -68,6 +68,7 @@ function isSVG(path: string) {
 @import '@/styles/mixins/form-grid';
 .theme-selection {
 	padding: var(--content-padding);
+	transition: all var(--fast) var(--transition);
 	.theme-previews {
 		display: flex;
 		grid-gap: 32px;
@@ -80,31 +81,39 @@ function isSVG(path: string) {
 			max-width: 240px;
 			overflow: hidden;
 			border-radius: var(--g-border-radius);
-			border: var(--g-border-width) solid var(--g-color-border-normal);
+			border-width: var(--g-border-width);
+			border-style: solid;
 			cursor: pointer;
 			&.current-theme {
 				border-color: var(--g-color-primary-normal);
-				color: var(--g-color-primary-normal);
-				font-weight: 700;
+				color: var(--g-color-primary-accent);
+				font-weight: 600;
 				.card-info {
 					border-color: var(--g-color-primary-normal);
 					background-color: var(--g-color-primary-subtle);
 				}
 			}
 			&:not(.current-theme) {
+				border-color: var(--g-color-border-normal);
+				transition: border-color var(--fast) var(--transition);
 				&:hover {
 					border-color: var(--g-color-border-accent);
-					color: var(--g-color-primary-normal);
+					color: var(--g-color-primary-accent);
+					transition: border-color var(--fast) var(--transition);
 					.card-info {
 						border-color: var(--g-color-border-accent);
+						transition: border-color var(--fast) var(--transition), color var(--fast) var(--transition);
 					}
 				}
 				&:active {
 					border-color: var(--g-color-primary-normal);
-					color: var(--g-color-primary-normal);
+					color: var(--g-color-primary-accent);
+					transition: border-color var(--fast) var(--transition);
 					.card-info {
 						border-color: var(--g-color-primary-normal);
 						background-color: var(--g-color-primary-subtle);
+						transition: border-color var(--fast) var(--transition), color var(--fast) var(--transition),
+							background-color var(--fast) var(--transition);
 					}
 				}
 			}
@@ -119,14 +128,12 @@ function isSVG(path: string) {
 				padding: 12px;
 				border-top: var(--g-border-width) solid var(--g-color-border-normal);
 				background-color: var(--g-color-background-page);
+				transition: border-color var(--fast) var(--transition), color var(--fast) var(--transition);
 			}
 		}
 	}
 }
 .grid {
 	@include form-grid;
-}
-.divider {
-	margin-top: 40px;
 }
 </style>
