@@ -23,10 +23,8 @@
 					]"
 				>
 					<router-link to="./light">
-						<div class="preview-thumbnail">
-							<!-- eslint-disable-next-line vue/no-v-html -->
-							<div v-if="isSVG(ThemePreview)" class="theme-light" v-html="ThemePreview" />
-						</div>
+						<!-- eslint-disable-next-line vue/no-v-html -->
+						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-light" v-html="ThemePreview" />
 						<div class="card-info">Light Theme</div>
 					</router-link>
 				</div>
@@ -39,10 +37,8 @@
 					]"
 				>
 					<router-link to="./dark">
-						<div class="preview-thumbnail">
-							<!-- eslint-disable-next-line vue/no-v-html -->
-							<div v-if="isSVG(ThemePreview)" class="theme-dark" v-html="ThemePreview" />
-						</div>
+						<!-- eslint-disable-next-line vue/no-v-html -->
+						<div v-if="isSVG(ThemePreview)" class="preview-thumbnail theme-dark" v-html="ThemePreview" />
 						<div class="card-info">Dark Theme</div>
 					</router-link>
 				</div>
@@ -56,16 +52,13 @@
 import ThemePreview from '../assets/theme-preview.svg?raw';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
-
 interface Props {
 	currentTheme?: string;
 }
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = withDefaults(defineProps<Props>(), {
 	currentTheme: 'light',
 });
-
 function isSVG(path: string) {
 	return path.startsWith('<svg');
 }
@@ -79,7 +72,6 @@ function isSVG(path: string) {
 		display: flex;
 		grid-gap: 32px;
 		flex-direction: row;
-
 		.theme-card {
 			display: flex;
 			flex-direction: column;
@@ -87,66 +79,50 @@ function isSVG(path: string) {
 			min-width: 200px;
 			max-width: 240px;
 			overflow: hidden;
-			border: none;
+			border-radius: var(--g-border-radius);
+			border: var(--g-border-width) solid var(--g-color-border-normal);
 			cursor: pointer;
-
 			&.current-theme {
 				border-color: var(--g-color-primary-normal);
+				color: var(--g-color-primary-normal);
+				font-weight: 700;
 				.card-info {
-					color: var(--g-color-primary-normal);
-				}
-				.preview-thumbnail {
 					border-color: var(--g-color-primary-normal);
+					background-color: var(--g-color-primary-subtle);
 				}
 			}
-
 			&:not(.current-theme) {
 				&:hover {
+					border-color: var(--g-color-border-accent);
 					color: var(--g-color-primary-normal);
-					.preview-thumbnail {
-						border-color: var(--g-color-primary-normal);
-					}
 					.card-info {
-						color: var(--g-color-foreground-accent);
+						border-color: var(--g-color-border-accent);
 					}
 				}
 				&:active {
+					border-color: var(--g-color-primary-normal);
 					color: var(--g-color-primary-normal);
-					.preview-thumbnail {
-						border-color: var(--g-color-primary-accent);
-					}
 					.card-info {
-						color: var(--g-color-foreground-normal);
+						border-color: var(--g-color-primary-normal);
+						background-color: var(--g-color-primary-subtle);
 					}
 				}
 			}
-
 			.preview-thumbnail {
 				width: 100%;
 				height: auto;
 				font-size: 0;
 				line-height: 0;
-				border-radius: var(--g-border-radius);
-				border: var(--g-border-width) solid var(--g-color-foreground-subtle);
-				overflow: hidden;
 			}
-
 			.card-info {
 				display: flex;
-				align-items: center;
-				width: 100%;
-				height: 20px;
-				margin-top: 2px;
-				overflow: hidden;
-				line-height: 1.3em;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				color: var(--g-color-foreground-normal);
+				padding: 12px;
+				border-top: var(--g-border-width) solid var(--g-color-border-normal);
+				background-color: var(--g-color-background-page);
 			}
 		}
 	}
 }
-
 .grid {
 	@include form-grid;
 }
