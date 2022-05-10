@@ -1208,39 +1208,27 @@ field_options:
         colors:
           title: Color Variables
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Choose the focal colors that will be used throughout Directus. An accent and subtle variant will be automatically generated for you.
         foreground:
           title: Fonts & Foreground
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Customize the fonts and foreground colors that will be used throughout Directus. Foreground colors apply to foreground elements, such as text and icons.
         background:
           title: Background Colors
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Customize the background colors that will be used throughout Directus. Background colors appear behind page content. This includes the main content area and the sidebar backdrop, as well as more subtle areas such as tooltips and tertiary action buttons.
         border:
           title: Border Options
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Set the width of borders, the radius of corners (border radius), and the colors of borders. These options will apply to areas such as input outlines, horizontal bars, and table borders.
         module:
           title: Module Bar
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
-        text_styles:
-          title: Text Styles
+            Adjust settings specific to the module bar.
+        type_styles:
+          title: Type Styles
           description: >-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Directus utilizes a set of type styles to determine how text should appear throughout the app. In this section, you can customize the type styles to fit your needs. For instance, if you'd prefer to default to a serif font, you could set the main "Text" type style to "Serif" (the font used will be pulled from Fonts & Foreground).
   directus_activity:
     login: Login
     create: Create

@@ -20,7 +20,14 @@
 		<theme-selection :current-theme="editingTheme"></theme-selection>
 
 		<div class="theme-options">
-			<v-form ref="themeForm" v-model="edits" :initial-values="initialValues" :fields="themeFields" :primary-key="1" />
+			<v-form
+				ref="themeForm"
+				:model-value="pendingChanges"
+				:initial-values="initialValues"
+				:fields="themeFields"
+				:primary-key="1"
+				@update:model-value="updateChanges($event)"
+			/>
 		</div>
 
 		<template #sidebar>
@@ -99,58 +106,9 @@ const generatedFieldDependencies = computed<Record<string, string[]>>(() => {
 	return dependencies;
 });
 
-const pendingEdits = ref<Record<string, any> | null>(null);
+const pendingChanges = ref<Record<string, any> | null>(null);
 
-const edits = computed<Record<string, any> | null>({
-	get() {
-		return pendingEdits.value;
-	},
-	set(edits) {
-		const toRegenerate = [];
-		for (const field of Object.keys(generatedFieldDependencies.value)) {
-			const dependencies = generatedFieldDependencies.value[field];
-			for (const dep of dependencies) {
-				if (
-					(edits?.[dep] && (!pendingEdits.value || edits?.[dep] !== pendingEdits.value[dep])) ||
-					(!edits?.[dep] && pendingEdits?.value?.[dep])
-				) {
-					toRegenerate.push(field);
-				}
-			}
-		}
-
-		if ((!pendingEdits.value || pendingEdits.value === {}) && toRegenerate.length > 0) {
-			pendingEdits.value = {};
-		}
-
-		if (!edits) {
-			edits = {};
-		}
-
-		for (const field of toRegenerate) {
-			const fieldData = themeFields.value.find((tField) => {
-				return tField.field === field;
-			});
-
-			if (!fieldData) continue;
-
-			const type = fieldData.meta?.options?.generateType;
-			const sourcePath = fieldData.meta?.options?.source || '';
-			const backgroundPath = fieldData.meta?.options?.backgroundSource || '';
-
-			if (!sourcePath) continue;
-
-			const sourceValue = edits?.[sourcePath] || initialValues.value[sourcePath];
-			const backgroundValue = edits?.[backgroundPath] || initialValues.value[backgroundPath];
-
-			edits[field] = generateColor(type, sourceValue, backgroundValue || null);
-		}
-
-		pendingEdits.value = edits as Record<string, any>;
-	},
-});
-
-const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
+const hasEdits = computed(() => pendingChanges.value !== null && Object.keys(pendingChanges.value).length > 0);
 
 const saving = ref(false);
 
@@ -163,7 +121,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 onBeforeRouteLeave(() => {
 	themeStore.setEditingTheme('light');
 	themeStore.setAppTheme();
-	edits.value = {};
+	pendingChanges.value = {};
 });
 
 watch(
@@ -175,9 +133,59 @@ watch(
 		themeStore.populateFonts(newTheme);
 		themeFields.value = themeStore.getFields;
 		initialValues.value = themeStore.getInitialValues;
-		edits.value = {};
+		pendingChanges.value = {};
 	}
 );
+
+function updateChanges(newEdits: Record<string, any>) {
+	const toRegenerate = [];
+	for (const field of Object.keys(generatedFieldDependencies.value)) {
+		const dependencies = generatedFieldDependencies.value[field];
+		for (const dep of dependencies) {
+			if (
+				(newEdits?.[dep] && (!pendingChanges.value || newEdits?.[dep] !== pendingChanges.value[dep])) ||
+				(!newEdits?.[dep] && pendingChanges?.value?.[dep])
+			) {
+				toRegenerate.push(field);
+			}
+		}
+	}
+
+	if ((!pendingChanges.value || pendingChanges.value === {}) && toRegenerate.length > 0) {
+		pendingChanges.value = {};
+	}
+
+	if (!newEdits) {
+		newEdits = {};
+	}
+
+	for (const field of toRegenerate) {
+		const fieldData = themeFields.value.find((tField) => {
+			return tField.field === field;
+		});
+
+		if (!fieldData) continue;
+
+		const type = fieldData.meta?.options?.generateType;
+		const sourcePath = fieldData.meta?.options?.source || '';
+		const backgroundPath = fieldData.meta?.options?.backgroundSource || '';
+
+		if (!sourcePath) continue;
+
+		const sourceValue = newEdits?.[sourcePath] || initialValues.value[sourcePath];
+		const backgroundValue = newEdits?.[backgroundPath] || initialValues.value[backgroundPath];
+
+		const generatedColor = generateColor(type, sourceValue, backgroundValue || null);
+
+		if (initialValues.value[field].toLowerCase() === generatedColor.toLowerCase()) {
+			delete newEdits[field];
+		} else {
+			newEdits[field] = generatedColor;
+		}
+	}
+
+	pendingChanges.value = newEdits as Record<string, any>;
+}
 
 function generateColor(type: string, source: string, background?: string) {
 	let newColor = '#cccccc';
@@ -194,20 +202,20 @@ function generateColor(type: string, source: string, background?: string) {
 }
 
 async function save() {
-	if (edits.value === {}) return;
+	if (pendingChanges.value === {}) return;
 	saving.value = true;
-	await themeStore.updateThemeOverrides({ [editingTheme.value]: edits.value });
+	await themeStore.updateThemeOverrides({ [editingTheme.value]: pendingChanges.value });
 	initialValues.value = themeStore.getInitialValues;
 	await serverStore.hydrate();
 	await themeStore.populateStyles();
 	await themeStore.populateFonts(editingTheme.value);
-	edits.value = {};
+	pendingChanges.value = {};
 	saving.value = false;
 }
 
 function discardAndLeave() {
 	if (!leaveTo.value) return;
-	edits.value = {};
+	pendingChanges.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
