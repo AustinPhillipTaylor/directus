@@ -32,28 +32,28 @@ export const lightTheme: Theme = {
 			color: {
 				primary: {
 					normal: '#6644FF',
-					accent: '#5138bc',
-					subtle: '#f4ecff',
+					accent: '#4800e2',
+					subtle: '#f2efff',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#d280b8',
-					subtle: '#ffe9f8',
+					accent: '#ff77ba',
+					subtle: '#ffebf9',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#2ea98b',
-					subtle: '#dbf5ea',
+					accent: '#28b694',
+					subtle: '#dbf7f0',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#d1a447',
-					subtle: '#ffedcc',
+					accent: '#e5b23b',
+					subtle: '#ffefcd',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#b34556',
-					subtle: '#ffeaeb',
+					accent: '#bc3b52',
+					subtle: '#fcedef',
 				},
 				border: {
 					normal: '#D3DAE4',
@@ -75,10 +75,6 @@ export const lightTheme: Theme = {
 				},
 			},
 		},
-		/**
-		 * Future iterations can build this out further to include more nuanced
-		 * categories, such as inputs, buttons, tables, etc.
-		 */
 		components: {
 			module: {
 				background: {

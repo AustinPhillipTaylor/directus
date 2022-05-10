@@ -32,28 +32,28 @@ export const darkTheme: Theme = {
 			color: {
 				primary: {
 					normal: '#8866ff',
-					accent: '#ab8aff',
-					subtle: '#201c33',
+					accent: '#a48bff',
+					subtle: '#191a2d',
 				},
 				secondary: {
 					normal: '#FF99DD',
-					accent: '#ffd2ef',
-					subtle: '#221e27',
+					accent: '#ffbdd9',
+					subtle: '#1f1924',
 				},
 				success: {
 					normal: '#2ECDA7',
-					accent: '#a9e7d2',
-					subtle: '#152123',
+					accent: '#35e5bb',
+					subtle: '#0d1e1f',
 				},
 				warning: {
 					normal: '#FBC54F',
-					accent: '#ffeecd',
-					subtle: '#221e1d',
+					accent: '#fcdcac',
+					subtle: '#1d1b16',
 				},
 				danger: {
 					normal: '#E35169',
-					accent: '#f0818a',
-					subtle: '#281c20',
+					accent: '#e7828f',
+					subtle: '#231820',
 				},
 				border: {
 					normal: '#30363D',
@@ -75,10 +75,6 @@ export const darkTheme: Theme = {
 				},
 			},
 		},
-		/**
-		 * Future iterations can build this out further to include more nuanced
-		 * categories, such as inputs, buttons, tables, etc.
-		 */
 		components: {
 			module: {
 				background: {
