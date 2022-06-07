@@ -1,3 +1,46 @@
+# The fields directly in the fields array are compiled to the following structure.
+# ---
+# Note - this is not the structure in which the fields should be written in this file.
+# Rather, this is the structure expected by the v-form component on the frontend.
+# ---
+# Directus will automatically parse the first-level fields and return it in this
+# structure. For instance, it'll place the interface, options, width, etc. in the meta
+# property. Of course, it'll also automatically fill the schema from the respective
+# database columns, amongst setting other defaults.
+# ---
+# Automatic parsing only applies to the immediate fields. Some fields, such as
+# `storage_asset_presets`, opt to add an array of sub-fields in the `options` property.
+# Directus will return these options as-is, as part of the field. Thus, any sub-fields
+# defined in such a manner should be written in the structure below.
+
+# - collection: string;
+#   field: string;
+#   type: Type;
+#   schema: Column | null;
+#   meta: FieldMeta | null;
+#     id: number;
+#     collection: string;
+#     field: string;
+#     group: string | null;
+#     hidden: boolean;
+#     interface: string | null;
+#     display: string | null;
+#     options: Record<string, any> | null;
+#     display_options: Record<string, any> | null;
+#     readonly: boolean;
+#     required: boolean;
+#     sort: number | null;
+#     special: string[] | null;
+#     translations: Translations[] | null;
+#     width: Width | null;
+#     note: string | null;
+#     conditions: Condition[] | null;
+#     validation: Filter | null;
+#     validation_message: string | null;
+#
+# For more detailed typing information refer to /shared/src/types/fields.ts
+#
+
 table: directus_settings
 
 fields:
@@ -379,5 +422,11 @@ fields:
               placeholder: $t:fields.directus_settings.attribution_placeholder
 
   - field: translation_strings
+    special: cast-json
+    hidden: true
+
+  # Theme Overrides are part of settings, but are only edited in the themes endpoint.
+  # We'll set hidden to true so it doesn't appear in the project settings page.
+  - field: theme_overrides
     special: cast-json
     hidden: true

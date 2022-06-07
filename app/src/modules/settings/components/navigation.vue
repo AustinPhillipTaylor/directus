@@ -44,6 +44,11 @@ export default defineComponent({
 				to: `/settings/project`,
 			},
 			{
+				icon: 'palette',
+				name: t('settings_theme'),
+				to: `/settings/themes`,
+			},
+			{
 				icon: 'list_alt',
 				name: t('settings_data_model'),
 				to: `/settings/data-model`,

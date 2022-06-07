@@ -1,6 +1,6 @@
 import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore, useFieldsStore, useThemeStore, useUserStore } from '@/stores';
 import RouterPass from '@/utils/router-passthrough';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -10,6 +10,7 @@ import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
+import ThemeEditor from './routes/theme/theme-editor.vue';
 import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item/item.vue';
@@ -21,6 +22,7 @@ import FlowsOverview from './routes/flows/overview.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
+import { User } from '@directus/shared/types';
 
 export default defineModule({
 	id: 'settings',
@@ -36,6 +38,43 @@ export default defineModule({
 			name: 'settings-project',
 			path: 'project',
 			component: Project,
+		},
+		{
+			path: 'themes',
+			component: RouterPass,
+			children: [
+				{
+					path: '',
+					redirect: () => {
+						const userStore = useUserStore();
+						let userSetTheme = (userStore.currentUser as User)?.theme || 'light';
+						if (userSetTheme === 'auto') {
+							if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+								userSetTheme = 'dark';
+							} else {
+								userSetTheme = 'light';
+							}
+						}
+
+						return {
+							name: 'settings-theme-editor',
+							params: { theme: userSetTheme },
+						};
+					},
+				},
+				{
+					name: 'settings-theme-editor',
+					path: ':theme',
+					component: ThemeEditor,
+					beforeEnter(to) {
+						const themeStore = useThemeStore();
+						const theme = (to.params.theme as string) || 'light';
+						themeStore.setEditingTheme(theme);
+						themeStore.setAppTheme(theme);
+						themeStore.populateFonts(theme);
+					},
+				},
+			],
 		},
 		{
 			path: 'data-model',

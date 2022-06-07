@@ -1729,6 +1729,7 @@ export class GraphQLService {
 				project_background: { type: GraphQLString },
 				project_note: { type: GraphQLString },
 				custom_css: { type: GraphQLString },
+				theme_overrides: { type: GraphQLJSON },
 			},
 		});
 
@@ -2718,6 +2719,26 @@ export class GraphQLService {
 						});
 						await service.inviteUser(args.email, args.role, args.invite_url || null);
 						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_settings' in schema.update.collections) {
+			schemaComposer.Mutation.addFields({
+				update_theme_overrides: {
+					type: ReadCollectionTypes['directus_settings'],
+					args: {
+						data: GraphQLJSON,
+					},
+					resolve: async (_, args, { req }) => {
+						const service = new SettingsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.updateThemeOverrides(args.data, req!.sanitizedQuery);
+						const result = await service.readSingleton(req!.sanitizedQuery);
+						return result;
 					},
 				},
 			});
